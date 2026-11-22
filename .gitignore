@@ -1,0 +1,10 @@
+.godot/
+.import/
+.DS_Store
+*.apk
+*.aab
+*.keystore
+*.jks
+android/build/
+*.tmp
+

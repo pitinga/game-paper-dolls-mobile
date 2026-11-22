@@ -1,0 +1,30 @@
+name: Testar Veste & Cria
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gdscript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Godot 4.7.2
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.2
+          use-dotnet: false
+      - name: Importar recursos
+        run: godot --headless --path . --editor --import --quit
+      - name: Verificar plugin de cobrança
+        run: (cd addons/GodotGooglePlayBilling && sha256sum -c SHA256SUMS)
+      - name: Testes de catálogo e regras
+        run: godot --headless --path . --script res://tests/test_catalog_and_rules.gd
+      - name: Testes de toque e exportação
+        run: godot --headless --path . --script res://tests/test_studio_integration.gd
+      # Ações NÃO publicam binários. APK/AAB serão gerados em etapa privada.
