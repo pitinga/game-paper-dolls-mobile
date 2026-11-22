@@ -3,6 +3,13 @@ extends SceneTree
 const Catalog = preload("res://scripts/catalog.gd")
 var errors := 0
 
+class PurchaseSpy extends Node:
+	var purchase_calls := 0
+	func purchase() -> void:
+		purchase_calls += 1
+	func restore() -> void:
+		pass
+
 
 func _initialize() -> void:
 	call_deferred("_run")
@@ -64,9 +71,25 @@ func _run() -> void:
 	_check(not game.PRO_SALES_ENABLED, "vendas Pro suspensas enquanto arte paga duplica arte grátis")
 	game.screen = "pro"
 	game.state.owned_pro = false
+	var original_billing: Node = game.billing
+	var spy := PurchaseSpy.new()
+	game.billing = spy
 	game._handle_tap(Vector2(game.size.x * 0.5, game.size.y - 215))
+	_check(spy.purchase_calls == 0, "suspensão não chama Billing.purchase()")
 	_check(not game.state.owned_pro, "botão Pro não libera conteúdo durante suspensão")
+	game.billing = original_billing
+	game.state.owned_pro = true
+	game.toast = ""
+	game._on_entitlement_checked(true)
+	_check(game.toast.is_empty(), "consulta automática de Pro já ativo não repete aviso")
+	game.state.owned_pro = false
 	game.screen = "home"
+	var first_short := load("res://assets/paper/bottom_00.png") as Texture2D
+	var first_pants := load("res://assets/paper/bottom_01.png") as Texture2D
+	_check(first_short != null and first_pants != null, "fixtures das duas alturas disponíveis")
+	if first_short != null and first_pants != null:
+		_check(first_short.get_size().y < first_short.get_size().x * 0.8, "short sintético mais curto que largo")
+		_check(first_pants.get_size().y > first_pants.get_size().x * 0.8, "calça sintética mais alta que short")
 	# O Pro Test não inicializa Billing: retomar o Android não deve mostrar
 	# "Google Play indisponível" por executar refresh de uma ponte desligada.
 	game._pro_test_build = true
