@@ -2,9 +2,11 @@
 .import/
 .DS_Store
 *.apk
+*.idsig
 *.aab
 *.keystore
 *.jks
 android/build/
+android/.build_version
 *.tmp
 

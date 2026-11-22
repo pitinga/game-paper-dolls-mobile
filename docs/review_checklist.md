@@ -1,6 +1,6 @@
 # Checklist para o revisor
 
-Base: Godot 4.7.2, projeto novo `game-paper-dolls-mobile`, versão inicial 0.1.0.
+Base: Godot 4.7.2, projeto `game-paper-dolls-mobile`, versão inicial 0.1.0.
 
 ## Código e testes
 
@@ -12,6 +12,7 @@ Base: Godot 4.7.2, projeto novo `game-paper-dolls-mobile`, versão inicial 0.1.0
 - `scripts/android_gallery.gd`: integração **experimental**, ainda sem validação no Android; falha deve preservar PNG privado.
 - `tests/test_catalog_and_rules.gd`: 0 falhas esperado.
 - `tests/test_studio_integration.gd`: 0 falhas esperado. O teste conhece e trata o renderer dummy em headless.
+- `tests/test_pro_debug_preset.gd`: garante que o desbloqueio de teste não entre nos presets de produção.
 
 ## Cenários manuais essenciais
 
@@ -23,4 +24,4 @@ Base: Godot 4.7.2, projeto novo `game-paper-dolls-mobile`, versão inicial 0.1.0
 6. Em Android 7–9, confirmar arquivo interno e definir fluxo de exportação pública.
 7. Comprar Pro, cancelar, restaurar e testar quando sem rede/Google Play com compra positiva anterior.
 8. Layout em 360x640, 540x960, 540x1200 e tablet; checar notch e botões de navegação.
-9. Verificar que não há APK/AAB público, segredos nem IDs de anúncios.
+9. Verificar que não há APK/AAB público, segredos nem IDs de anúncios. `Android Pro Test` é um APK debug em pacote separado (`com.pitinga.paperdolls.protest`), sem cobrança real.

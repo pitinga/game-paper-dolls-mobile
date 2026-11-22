@@ -32,12 +32,16 @@ var _portrait: Node2D
 var studio_storage_path := StudioState.STORAGE_PATH
 var entitlement_file := ENTITLEMENT_FILE
 var export_folder := EXPORT_FOLDER
+var _pro_test_build := false
 
 
 func _ready() -> void:
 	state = StudioState.new()
 	state.storage_path = studio_storage_path
-	state.owned_pro = _load_positive_entitlement()
+	# O desbloqueio de teste só existe com os DOIS requisitos: APK de debug
+	# e preset dedicado. Nunca é ativado no pacote publicado pela Play Store.
+	_pro_test_build = OS.is_debug_build() and OS.has_feature("paper_dolls_pro_test")
+	state.owned_pro = _pro_test_build or _load_positive_entitlement()
 	state.load_saved()
 	_portrait_view = SubViewport.new()
 	_portrait_view.name = "PortraitViewport"
@@ -63,7 +67,8 @@ func _ready() -> void:
 	billing.checkout_changed.connect(func(busy: bool) -> void:
 		billing_busy = busy
 		queue_redraw())
-	billing.start()
+	if not _pro_test_build:
+		billing.start()
 	queue_redraw()
 
 

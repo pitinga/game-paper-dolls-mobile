@@ -28,7 +28,17 @@ godot --headless --path . --script res://tests/test_catalog_and_rules.gd
 godot --headless --path . --script res://tests/test_studio_integration.gd
 ```
 
-Não houve geração ou publicação de APK/AAB nesta rodada. `export_presets.cfg` prepara Android **7+ (API 24), ARM64** e uma única versão Free + Pro interno. O CI executa testes, mas não distribui arquivos binários em um repositório público.
+`export_presets.cfg` prepara Android **7+ (API 24), ARM64** e uma única versão Free + Pro interno. O CI executa testes, mas **não distribui APK/AAB** em um repositório público. APKs de teste são construídos localmente e compartilhados apenas com quem vai testar.
+
+O preset adicional **Android Pro Test** serve exclusivamente para gerar um APK de depuração com conteúdo premium liberado, app ID `com.pitinga.paperdolls.protest`. A liberação só funciona quando o binário é de **debug** e contém a feature `paper_dolls_pro_test`; nem a exportação Android normal nem o AAB Google Play incluem essa feature.
+
+Para gerar o APK com as ferramentas Android e templates de exportação instalados:
+
+```bash
+godot --headless --path . --export-debug "Android Pro Test" build/paper-dolls-pro-test.apk
+```
+
+Este preset usa a exportação Android direta do Godot (sem Gradle/Google Play Billing), pois testa conteúdo e interface, **não** o fluxo de pagamento. O pacote de teste não substitui o jogo instalado pela Play Store. O APK permanece ignorado pelo Git.
 
 ## Privacidade e compras
 

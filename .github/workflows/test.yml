@@ -27,4 +27,6 @@ jobs:
         run: godot --headless --path . --script res://tests/test_catalog_and_rules.gd
       - name: Testes de toque e exportação
         run: godot --headless --path . --script res://tests/test_studio_integration.gd
+      - name: Garantir isolamento do APK Pro de teste
+        run: godot --headless --path . --script res://tests/test_pro_debug_preset.gd
       # Ações NÃO publicam binários. APK/AAB serão gerados em etapa privada.
