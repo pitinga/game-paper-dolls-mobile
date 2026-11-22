@@ -25,6 +25,12 @@ func _run() -> void:
 	root.add_child(game)
 	await process_frame
 	_check(game.screen == "home", "inicia no menu")
+	game.toast = ""
+	game.billing._on_disconnected()
+	_check(game.toast.is_empty(), "billing disconnect does not toast on automatic refresh")
+	game.billing._on_product_details({"response_code": 1, "product_details": []})
+	_check(game.toast.is_empty(), "missing Play product details do not toast automatically")
+
 	_check(ProjectSettings.get_setting("application/config/quit_on_go_back") == false, "Android back delegated to app")
 	game.screen = "studio"
 	game._notification(Node.NOTIFICATION_WM_GO_BACK_REQUEST)
