@@ -49,6 +49,7 @@ func _run() -> void:
 	game._pointer_up(9, canceled_down.position)
 	_check(game.state.outfit["top"] == "top_00", "touch recovers after pause")
 	game.state.reset_outfit()
+	game.state.history.clear()
 	game._clear_armed = true
 	game._clear_timeout = 4.0
 	game._studio_tap(Vector2(35, game.size.y - 30))
