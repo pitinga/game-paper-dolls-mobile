@@ -147,7 +147,8 @@ static func draw_item_on_doll(canvas: CanvasItem, item: Dictionary, variant: int
 	match slot:
 		"top": _fit_top(canvas, name, TOP_RECT, tint)
 		"bottom":
-			var is_long := str(item["style"]) == "calca"
+			# Fit by source cutout, not by inconsistent catalog style.
+			var is_long := name in ["bottom_01", "bottom_04", "bottom_05", "bottom_07"]
 			_fit_top(canvas, name, PANTS_RECT if is_long else SHORTS_RECT, tint)
 		"dress": _fit_top(canvas, name, DRESS_RECT, tint)
 		"shoes":
