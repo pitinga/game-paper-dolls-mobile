@@ -519,12 +519,14 @@ func _handle_tap(point: Vector2) -> void:
 				var col := 0 if point.x < w * 0.5 else 1
 				var row := floori((y - 158) / 181)
 				var index := row * 2 + col
-				if index < Catalog.BACKGROUNDS.size():
+				if index >= 0 and index < Catalog.BACKGROUNDS.size():
 					if state.select_background(index):
 						state.save()
-					screen = "studio"
+						screen = "studio"
 					elif bool(Catalog.BACKGROUNDS[index]["pro"]) and not state.owned_pro:
 						screen = "pro"
+					else:
+						screen = "studio"
 		"challenges":
 			if y < 85:
 				screen = "home"
