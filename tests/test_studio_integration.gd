@@ -25,6 +25,12 @@ func _run() -> void:
 	root.add_child(game)
 	await process_frame
 	_check(game.screen == "home", "inicia no menu")
+	_check(not game.PRO_SALES_ENABLED, "vendas Pro suspensas enquanto arte paga duplica arte grátis")
+	game.screen = "pro"
+	game.state.owned_pro = false
+	game._handle_tap(Vector2(game.size.x * 0.5, game.size.y - 215))
+	_check(not game.state.owned_pro, "botão Pro não libera conteúdo durante suspensão")
+	game.screen = "home"
 	# O Pro Test não inicializa Billing: retomar o Android não deve mostrar
 	# "Google Play indisponível" por executar refresh de uma ponte desligada.
 	game._pro_test_build = true
