@@ -25,6 +25,35 @@ func _run() -> void:
 	root.add_child(game)
 	await process_frame
 	_check(game.screen == "home", "inicia no menu")
+	_check(ProjectSettings.get_setting("application/config/quit_on_go_back") == false, "Android back delegated to app")
+	game.screen = "studio"
+	game._notification(Node.NOTIFICATION_WM_GO_BACK_REQUEST)
+	_check(game.screen == "home", "Android back returns to home")
+	game.screen = "studio"
+	var canceled_down := InputEventScreenTouch.new()
+	canceled_down.index = 7
+	canceled_down.pressed = true
+	canceled_down.position = Vector2(45, game.size.y - 200)
+	game._gui_input(canceled_down)
+	var canceled_up := InputEventScreenTouch.new()
+	canceled_up.index = 7
+	canceled_up.pressed = false
+	canceled_up.canceled = true
+	canceled_up.position = canceled_down.position
+	game._gui_input(canceled_up)
+	_check(game.active_finger == -99 and game.state.outfit["top"] == "", "canceled touch does not wear item")
+	game._pointer_down(8, canceled_down.position)
+	game._notification(Node.NOTIFICATION_APPLICATION_PAUSED)
+	_check(game.active_finger == -99 and game.dragging_id.is_empty(), "pause clears captured finger")
+	game._pointer_down(9, canceled_down.position)
+	game._pointer_up(9, canceled_down.position)
+	_check(game.state.outfit["top"] == "top_00", "touch recovers after pause")
+	game.state.reset_outfit()
+	game._clear_armed = true
+	game._clear_timeout = 4.0
+	game._studio_tap(Vector2(35, game.size.y - 30))
+	_check(not game._clear_armed, "undo disarms clear confirmation")
+	game.screen = "home"
 	_check(not game.PRO_SALES_ENABLED, "vendas Pro suspensas enquanto arte paga duplica arte grátis")
 	game.screen = "pro"
 	game.state.owned_pro = false
