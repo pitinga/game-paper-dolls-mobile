@@ -131,7 +131,7 @@ func _draw() -> void:
 
 func _toast_rect(bounds: Vector2) -> Rect2:
 	# Nunca esconder o progresso do desafio nem os comandos do guarda-roupa.
-	var y := bounds.y - WARDROBE_HEIGHT - 56 if screen == "studio" else bounds.y - 425.0
+	var y := bounds.y - WARDROBE_HEIGHT - 56 if screen == "studio" else bounds.y - 392.0
 	return Rect2(18, y, bounds.x - 36, 46)
 
 
@@ -508,8 +508,9 @@ func _handle_tap(point: Vector2) -> void:
 				var col := 0 if point.x < w * 0.5 else 1
 				var row := floori((y - 165) / 270)
 				var index := row * 2 + col
-				if state.select_model(index):
-					state.save()
+				if index >= 0 and index < Catalog.MODEL_NAMES.size():
+					if state.select_model(index):
+						state.save()
 					screen = "studio"
 		"background":
 			if y < 85:
@@ -521,7 +522,7 @@ func _handle_tap(point: Vector2) -> void:
 				if index < Catalog.BACKGROUNDS.size():
 					if state.select_background(index):
 						state.save()
-						screen = "studio"
+					screen = "studio"
 					elif bool(Catalog.BACKGROUNDS[index]["pro"]) and not state.owned_pro:
 						screen = "pro"
 		"challenges":
@@ -598,6 +599,8 @@ func _studio_tap(point: Vector2) -> void:
 			1:
 				if state.remove(category):
 					state.save()
+				else:
+					_show_message("Nenhuma peça desta categoria para tirar.")
 			2: screen = "background"
 			3:
 				if _clear_armed:
