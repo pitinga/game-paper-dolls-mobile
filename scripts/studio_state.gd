@@ -9,6 +9,7 @@ var background_index := 0
 var color_variant := 0
 var challenge_index := -1
 var owned_pro := false
+var completed_challenges: Array[int] = []
 var outfit: Dictionary = {}
 var history: Array[Dictionary] = []
 var storage_path := STORAGE_PATH
@@ -25,7 +26,10 @@ func wear(id: String) -> bool:
 		return false
 	var slot: String = item["slot"]
 	if outfit.get(slot, "") == id:
-		return false
+		# Tocar novamente na roupa escolhida é o caminho infantil para tirá-la.
+		_remember()
+		outfit[slot] = ""
+		return true
 	_remember()
 	if slot == "dress":
 		outfit["top"] = ""
@@ -102,6 +106,13 @@ func challenge_progress() -> int:
 	return mini(matched, 2)
 
 
+func complete_challenge_if_ready() -> bool:
+	if challenge_index < 0 or challenge_progress() < 2 or completed_challenges.has(challenge_index):
+		return false
+	completed_challenges.append(challenge_index)
+	return true
+
+
 func undo() -> bool:
 	if history.is_empty():
 		return false
@@ -127,6 +138,7 @@ func save() -> Error:
 	config.set_value("studio", "background", background_index)
 	config.set_value("studio", "color", color_variant)
 	config.set_value("studio", "challenge", challenge_index)
+	config.set_value("studio", "completed_challenges", completed_challenges)
 	for slot in Catalog.SLOTS:
 		config.set_value("outfit", slot, outfit.get(slot, ""))
 	return config.save(storage_path)
@@ -141,6 +153,13 @@ func load_saved() -> void:
 	background_index = stored_bg if owned_pro or not bool(Catalog.BACKGROUNDS[stored_bg]["pro"]) else 0
 	color_variant = clampi(int(config.get_value("studio", "color", 0)), 0, 4)
 	challenge_index = clampi(int(config.get_value("studio", "challenge", -1)), -1, Catalog.CHALLENGES.size() - 1)
+	completed_challenges.clear()
+	var saved_challenges: Variant = config.get_value("studio", "completed_challenges", [])
+	if saved_challenges is Array:
+		for value in saved_challenges:
+			var index := int(value)
+			if index >= 0 and index < Catalog.CHALLENGES.size() and not completed_challenges.has(index):
+				completed_challenges.append(index)
 	for slot in Catalog.SLOTS:
 		var stored_id: String = str(config.get_value("outfit", slot, ""))
 		var item: Dictionary = Catalog.by_id(stored_id)

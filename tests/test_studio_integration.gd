@@ -25,6 +25,12 @@ func _run() -> void:
 	root.add_child(game)
 	await process_frame
 	_check(game.screen == "home", "inicia no menu")
+	# O Pro Test não inicializa Billing: retomar o Android não deve mostrar
+	# "Google Play indisponível" por executar refresh de uma ponte desligada.
+	game._pro_test_build = true
+	game.toast = ""
+	game._notification(Node.NOTIFICATION_APPLICATION_RESUMED)
+	_check(game.toast.is_empty(), "retomada do Pro Test não gera falso erro de Google Play")
 	game._handle_tap(Vector2(200, game.size.y - 295))
 	_check(game.screen == "studio", "menu abre estúdio")
 	# Emula toque real na vitrine; o usuário pode tocar ou arrastar.
@@ -43,7 +49,7 @@ func _run() -> void:
 	up.position = Vector2(255, 350)
 	game._gui_input(up)
 	_check(game.state.outfit["top"] == "top_00", "arrastar roupa por toque encaixa")
-	game._handle_tap(Vector2(game.size.x * 0.415, game.size.y - 280))
+	game._handle_tap(Vector2(game.size.x * 0.415, game.size.y - 330))
 	_check(game.category == "dress", "selecionar categoria")
 	game._pointer_down(1, Vector2(45, game.size.y - 200))
 	game._pointer_up(1, Vector2(45, game.size.y - 200))
@@ -54,8 +60,31 @@ func _run() -> void:
 	game._pointer_down(1, Vector2(165, game.size.y - 200))
 	_check(game.active_finger == 0, "segunda captura ignorada")
 	game._pointer_up(0, Vector2(300, 350))
+	_check(game.state.outfit["dress"] == "", "repetir toque na peça selecionada remove roupa")
 	game._handle_tap(Vector2(35, game.size.y - 30))
-	_check(game.state.outfit["top"] == "top_00", "desfazer integrado restaura blusa")
+	_check(game.state.outfit["dress"] == "dress_00", "desfazer da remoção restaura vestido")
+	game._handle_tap(Vector2(35, game.size.y - 30))
+	_check(game.state.outfit["top"] == "top_00", "segundo desfazer restaura blusa")
+	var selected: Dictionary = Catalog.by_id("top_00")
+	_check(str(selected["name"]).findn("azul") < 0, "nome de peça não depende da cor atual")
+	game.state.reset_outfit()
+	game.state.select_challenge(1)
+	game.state.wear("top_00")
+	game.state.wear("bottom_00")
+	_check(game.state.challenge_progress() == 2, "progresso de desafio por duas peças")
+	_check(game.state.complete_challenge_if_ready(), "conquista de desafio registrada")
+	_check(not game.state.complete_challenge_if_ready(), "conquista idempotente")
+	_check(game._toast_rect(game.size).position.y > 157.0, "aviso não cobre placa de desafio")
+	game.state.save()
+	var restored: RefCounted = load("res://scripts/studio_state.gd").new()
+	restored.storage_path = game.studio_storage_path
+	restored.load_saved()
+	_check(restored.completed_challenges.has(1), "conquista preservada em disco")
+	game.state.reset_outfit()
+	game._studio_tap(Vector2(game.size.x - 25, game.size.y - 30))
+	_check(game._clear_armed and game.state.history.size() > 0, "limpar exige confirmação")
+	game._studio_tap(Vector2(game.size.x - 25, game.size.y - 30))
+	_check(not game._clear_armed, "confirmação consumida")
 	# Exportação só da composição, sem botões, em PNG válido 540x640.
 	game.screen = "finish"
 	game.export_png()

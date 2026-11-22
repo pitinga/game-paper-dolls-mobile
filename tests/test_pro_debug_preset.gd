@@ -25,6 +25,7 @@ func _run() -> void:
 	_check(debug_flags.contains("paper_dolls_pro_test"), "Preset de teste tem flag exclusiva")
 	_check(str(presets.get_value("preset.2.options", "package/unique_name", "")) == "com.pitinga.paperdolls.protest", "Pacote de teste separado")
 	_check(not bool(presets.get_value("preset.2.options", "gradle_build/use_gradle_build", true)), "Teste usa exportação direta, sem dependências Gradle")
+	_check(not bool(presets.get_value("preset.2.options", "permissions/internet", true)), "APK Pro offline não deve solicitar INTERNET")
 	_check(bool(presets.get_value("preset.2.options", "architectures/arm64-v8a", false)), "ARM64 incluído")
 	_check(not bool(presets.get_value("preset.2.options", "architectures/armeabi-v7a", true)), "32 bits não incluído")
 	print("Preset Pro de teste: %d falhas" % problems)
