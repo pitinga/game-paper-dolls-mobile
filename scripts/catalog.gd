@@ -47,7 +47,7 @@ static func _populate() -> void:
 	var motifs := ["coracao", "estrela", "flor", "bolinhas", "listras", "fruta", "borboleta", "simples"]
 	var shapes := {
 		"top": ["camiseta", "regata", "manga", "blusa", "cropped", "casaco", "camiseta", "manga"],
-		"bottom": ["shorts", "calca", "saia", "shorts", "saia", "calca", "saia", "calca"],
+		"bottom": ["shorts", "calca", "shorts", "shorts", "calca", "calca", "shorts", "calca"],
 		"dress": ["rodado", "reto", "rodado", "festa", "reto", "rodado", "festa", "reto"],
 		"shoes": ["tenis", "sandalia", "bota", "sapato", "tenis", "bota"]
 	}
