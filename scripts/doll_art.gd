@@ -27,7 +27,7 @@ static func draw_background(canvas: CanvasItem, index: int) -> void:
 		2:
 			canvas.draw_circle(Vector2(446, 100), 52, Color("ffdd75"))
 			canvas.draw_rect(Rect2(0, 458, 540, 182), Color("ffe4b4"))
-			for wave in range(5):
+			for wave in range(4):
 				canvas.draw_arc(Vector2(90 + wave * 110, 459), 76, PI, TAU, 24, Color("76dce0"), 5)
 		3:
 			for i in range(18):

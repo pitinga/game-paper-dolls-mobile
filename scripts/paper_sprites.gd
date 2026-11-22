@@ -3,6 +3,7 @@ extends RefCounted
 ## as mesmas coordenadas de montagem (540x640): não dependem da tela Android.
 
 const Catalog = preload("res://scripts/catalog.gd")
+const Art = preload("res://scripts/doll_art.gd")
 const FOLDER := "res://assets/paper/"
 const DOLL_RECT := Rect2(120, 64, 300, 520)
 const TOP_RECT := Rect2(200, 351, 140, 118)
@@ -12,6 +13,7 @@ const DRESS_RECT := Rect2(180, 347, 180, 204)
 const FOOT_BASELINE := 584.0
 
 static var _cache: Dictionary = {}
+# Cache missing resources too: draw loops must not recheck disk every frame.
 
 
 static func _texture(name: String) -> Texture2D:
@@ -146,7 +148,9 @@ static func draw_item_on_doll(canvas: CanvasItem, item: Dictionary, variant: int
 	match slot:
 		"top": _fit_top(canvas, name, TOP_RECT, tint)
 		"bottom":
-			var is_long := str(item["style"]) == "calca"
+			# Fit by source cutout, not by inconsistent catalog style.
+			var texture := _texture(name)
+			var is_long := texture != null and texture.get_size().y > texture.get_size().x * 0.80
 			_fit_top(canvas, name, PANTS_RECT if is_long else SHORTS_RECT, tint)
 		"dress": _fit_top(canvas, name, DRESS_RECT, tint)
 		"shoes":
@@ -166,7 +170,6 @@ static func draw_item_on_doll(canvas: CanvasItem, item: Dictionary, variant: int
 			if not _fit_centered(canvas, name, region, tint):
 				# Nove acessórios são vetoriais; antes a ausência de PNG fazia
 				# com que eles aparecessem no card, mas NÃO na boneca.
-				var Art = load("res://scripts/doll_art.gd")
 				var at := Vector2(270, 320)
 				match style:
 					"bolsa": at = Vector2(270, 330)
@@ -180,7 +183,6 @@ static func draw_item_thumbnail(canvas: CanvasItem, item: Dictionary, center: Ve
 	var name := _sprite_name(item)
 	if not _fit_centered(canvas, name, Rect2(center - size * 0.5, size)):
 		# Cabelos e acessórios sem recorte continuam identificáveis no catálogo.
-		var Art = load("res://scripts/doll_art.gd")
 		Art.draw_item(canvas, item, center, 0.56)
 
 

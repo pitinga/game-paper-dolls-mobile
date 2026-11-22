@@ -24,7 +24,10 @@ func _initialize() -> void:
 			var name := "%s_%02d" % [slot, index]
 			match slot:
 				"top": _write(name, 221, 198, Rect2i(10, 12, 200, 170), Color("78bdd5"))
-				"bottom": _write(name, 224, 231, Rect2i(14, 18, 196, 190), Color("80c2a8"))
+				"bottom":
+					var tall := index in [1, 4, 5, 7]
+					var height := 231 if tall else 128
+					_write(name, 224, height, Rect2i(14, 12, 196, height - 23), Color("80c2a8"))
 				"dress": _write(name, 207, 397, Rect2i(15, 14, 177, 370), Color("81a1ca"))
 				"shoes": _write(name, 190, 90, Rect2i(5, 12, 180, 70), Color("c28dca"))
 	for index in range(3):

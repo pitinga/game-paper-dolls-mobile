@@ -11,14 +11,23 @@ permissions:
 
 jobs:
   gdscript:
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - name: Godot 4.7.2
-        uses: chickensoft-games/setup-godot@v2
-        with:
-          version: 4.7.2
-          use-dotnet: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Godot 4.7.2 com verificação de hash
+        run: |
+          set -euo pipefail
+          VERSION=4.7.2-stable
+          FILE=Godot_v${VERSION}_linux.x86_64.zip
+          BASE=https://github.com/godotengine/godot-builds/releases/download/${VERSION}
+          wget -q "${BASE}/${FILE}" -O "/tmp/${FILE}"
+          wget -q "${BASE}/SHA512-SUMS.txt" -O /tmp/SHA512-SUMS.txt
+          cd /tmp
+          grep -F " ${FILE}" SHA512-SUMS.txt | sha512sum -c -
+          unzip -q "${FILE}"
+          sudo install "Godot_v${VERSION}_linux.x86_64" /usr/local/bin/godot
+          godot --version | grep -q '^4\.7\.2\.stable'
       - name: Gerar imagens geométricas sintéticas para o CI público
         run: godot --headless --path . --script res://tools/create_ci_sprite_fixtures.gd
       - name: Importar recursos

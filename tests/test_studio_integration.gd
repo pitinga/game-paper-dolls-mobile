@@ -3,6 +3,13 @@ extends SceneTree
 const Catalog = preload("res://scripts/catalog.gd")
 var errors := 0
 
+class PurchaseSpy extends Node:
+	var purchase_calls := 0
+	func purchase() -> void:
+		purchase_calls += 1
+	func restore() -> void:
+		pass
+
 
 func _initialize() -> void:
 	call_deferred("_run")
@@ -25,6 +32,64 @@ func _run() -> void:
 	root.add_child(game)
 	await process_frame
 	_check(game.screen == "home", "inicia no menu")
+	game.toast = ""
+	game.billing._on_disconnected()
+	_check(game.toast.is_empty(), "billing disconnect does not toast on automatic refresh")
+	game.billing._on_product_details({"response_code": 1, "product_details": []})
+	_check(game.toast.is_empty(), "missing Play product details do not toast automatically")
+
+	_check(ProjectSettings.get_setting("application/config/quit_on_go_back") == false, "Android back delegated to app")
+	game.screen = "studio"
+	game._notification(Node.NOTIFICATION_WM_GO_BACK_REQUEST)
+	_check(game.screen == "home", "Android back returns to home")
+	game.screen = "studio"
+	var canceled_down := InputEventScreenTouch.new()
+	canceled_down.index = 7
+	canceled_down.pressed = true
+	canceled_down.position = Vector2(45, game.size.y - 200)
+	game._gui_input(canceled_down)
+	var canceled_up := InputEventScreenTouch.new()
+	canceled_up.index = 7
+	canceled_up.pressed = false
+	canceled_up.canceled = true
+	canceled_up.position = canceled_down.position
+	game._gui_input(canceled_up)
+	_check(game.active_finger == -99 and game.state.outfit["top"] == "", "canceled touch does not wear item")
+	game._pointer_down(8, canceled_down.position)
+	game._notification(Node.NOTIFICATION_APPLICATION_PAUSED)
+	_check(game.active_finger == -99 and game.dragging_id.is_empty(), "pause clears captured finger")
+	game._pointer_down(9, canceled_down.position)
+	game._pointer_up(9, canceled_down.position)
+	_check(game.state.outfit["top"] == "top_00", "touch recovers after pause")
+	game.state.reset_outfit()
+	game.state.history.clear()
+	game._clear_armed = true
+	game._clear_timeout = 4.0
+	game._studio_tap(Vector2(35, game.size.y - 30))
+	_check(not game._clear_armed, "undo disarms clear confirmation")
+	game.screen = "home"
+	_check(not game.PRO_SALES_ENABLED, "vendas Pro suspensas enquanto arte paga duplica arte grátis")
+	game.screen = "pro"
+	game.state.owned_pro = false
+	var original_billing: Node = game.billing
+	var spy := PurchaseSpy.new()
+	game.billing = spy
+	game._handle_tap(Vector2(game.size.x * 0.5, game.size.y - 215))
+	_check(spy.purchase_calls == 0, "suspensão não chama Billing.purchase()")
+	_check(not game.state.owned_pro, "botão Pro não libera conteúdo durante suspensão")
+	game.billing = original_billing
+	game.state.owned_pro = true
+	game.toast = ""
+	game._on_entitlement_checked(true)
+	_check(game.toast.is_empty(), "consulta automática de Pro já ativo não repete aviso")
+	game.state.owned_pro = false
+	game.screen = "home"
+	var first_short := load("res://assets/paper/bottom_00.png") as Texture2D
+	var first_pants := load("res://assets/paper/bottom_01.png") as Texture2D
+	_check(first_short != null and first_pants != null, "fixtures das duas alturas disponíveis")
+	if first_short != null and first_pants != null:
+		_check(first_short.get_size().y < first_short.get_size().x * 0.8, "short sintético mais curto que largo")
+		_check(first_pants.get_size().y > first_pants.get_size().x * 0.8, "calça sintética mais alta que short")
 	# O Pro Test não inicializa Billing: retomar o Android não deve mostrar
 	# "Google Play indisponível" por executar refresh de uma ponte desligada.
 	game._pro_test_build = true
