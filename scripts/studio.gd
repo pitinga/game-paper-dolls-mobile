@@ -302,7 +302,7 @@ func _draw_pro(bounds: Vector2) -> void:
 		var x := bounds.x * 0.5 - 143 + i * 95
 		Sprites.draw_item_thumbnail(self, Catalog.filtered("dress")[8 + i], Vector2(x, 410), Vector2(82, 98))
 	_label("Grátis: salvar imagens e usar 4 modelos", Vector2(bounds.x * 0.5, 535), 18, Color("795777"))
-	_label("PRO: peças exclusivas e sem anúncios", Vector2(bounds.x * 0.5, 572), 18, Color("795777"))
+	_label("PRO: compras suspensas até termos artes exclusivas" if not PRO_SALES_ENABLED else "PRO: peças exclusivas e sem anúncios", Vector2(bounds.x * 0.5, 572), 18, Color("795777"))
 	_label("Compras restauráveis na Play Store", Vector2(bounds.x * 0.5, 608), 16, Color("98768b"))
 	if state.owned_pro:
 		_label("✓ PRO ATIVO", Vector2(bounds.x * 0.5, bounds.y - 245), 27, Color("46886c"))
