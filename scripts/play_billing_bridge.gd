@@ -64,7 +64,7 @@ func _init() -> void:
 
 func start() -> void:
 	if OS.get_name() != "Android" or not Engine.has_singleton("GodotGooglePlayBilling"):
-		purchase_message.emit("Compras disponíveis após configurar o Google Play Billing.")
+		print_debug("Google Play Billing plugin unavailable")
 		return
 	_native = Engine.get_singleton("GodotGooglePlayBilling")
 	_native.call("initPlugin")
@@ -108,7 +108,7 @@ func refresh() -> void:
 			_connection_retry_attempts = 0
 			_connect()
 	else:
-		purchase_message.emit("Google Play indisponível. Tente novamente com internet.")
+		print_debug("Google Play unavailable during background refresh")
 
 
 func restore() -> void:
@@ -247,7 +247,7 @@ func _on_disconnected() -> void:
 	_price = ""
 	availability_changed.emit(false)
 	price_changed.emit("")
-	purchase_message.emit("Google Play desconectado. Sua compra será verificada ao reconectar.")
+	print_debug("Google Play disconnected; retry scheduled")
 	_schedule_connection_retry()
 
 
@@ -257,7 +257,7 @@ func _on_connect_error(_response_code: int, _debug_message: String) -> void:
 
 func _schedule_connection_retry() -> void:
 	if _native == null or _connection_retry_attempts >= CONNECT_RETRY_LIMIT:
-		purchase_message.emit("Google Play indisponível. Use Restaurar para tentar novamente.")
+		print_debug("Google Play reconnect retries exhausted")
 		return
 	if not _reconnect_timer.is_stopped():
 		return
@@ -301,7 +301,7 @@ func _on_product_details(response: Dictionary) -> void:
 	availability_changed.emit(_product_available)
 	price_changed.emit(_price)
 	if not _product_available:
-		purchase_message.emit("Preço do Pro indisponível nesta conta da Play Store.")
+		print_debug("Google Play product details unavailable")
 	# A restauração é independente do cadastro/preço do produto e também
 	# deve funcionar quando queryProductDetails retorna um erro.
 	if should_restore:
@@ -311,7 +311,8 @@ func _on_product_details(response: Dictionary) -> void:
 func _on_purchases(response: Dictionary) -> void:
 	if int(response.get("response_code", -1)) != RESPONSE_OK:
 		entitlement_verification_failed.emit()
-		purchase_message.emit("Não foi possível restaurar compras agora. Tente novamente.")
+		if bool(_query_context.get("manual_restore", false)):
+			purchase_message.emit("Não foi possível restaurar compras agora. Tente novamente.")
 		_finish_purchase_query(false)
 		return
 	var owned := false
@@ -356,7 +357,8 @@ func _on_purchases(response: Dictionary) -> void:
 	if _query_active:
 		entitlement_query_completed.emit(int(_query_context.get("query_id", 0)), owned)
 	if owned:
-		purchase_message.emit("Pro restaurado: anúncios desativados.")
+		if bool(_query_context.get("manual_restore", false)):
+			purchase_message.emit("PRO ativo ✦")
 	elif bool(_query_context.get("manual_restore", false)):
 		purchase_message.emit("Pro não encontrado nesta conta Google da Play Store. Se já comprou, selecione a conta usada na compra e toque em RESTAURAR; procure o suporte se persistir.")
 	_finish_purchase_query(not owned)
