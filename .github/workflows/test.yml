@@ -11,9 +11,10 @@ permissions:
 
 jobs:
   gdscript:
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2, pinned
       - name: Godot 4.7.2
         uses: chickensoft-games/setup-godot@v2
         with:
