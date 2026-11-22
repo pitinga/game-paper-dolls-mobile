@@ -79,6 +79,10 @@ func _ready() -> void:
 
 
 func _notification(what: int) -> void:
+	if what in [NOTIFICATION_APPLICATION_PAUSED, NOTIFICATION_APPLICATION_FOCUS_OUT, NOTIFICATION_WM_WINDOW_FOCUS_OUT]:
+		_cancel_pointer()
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		_go_back()
 	if what == NOTIFICATION_APPLICATION_PAUSED or what == NOTIFICATION_WM_CLOSE_REQUEST:
 		if state != null:
 			state.save()
@@ -384,6 +388,8 @@ func _gui_input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
 		if event.pressed:
 			_pointer_down(event.index, event.position)
+		elif event.canceled:
+			_cancel_pointer()
 		else:
 			_pointer_up(event.index, event.position)
 		accept_event()
@@ -408,11 +414,20 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 
 func _go_back() -> void:
+	if screen == "home":
+		get_tree().quit()
+		return
 	match screen:
 		"studio": screen = "home"
 		"finish", "background": screen = "studio"
 		_: screen = "home"
 	_clear_armed = false
+	queue_redraw()
+
+
+func _cancel_pointer() -> void:
+	active_finger = -99
+	dragging_id = ""
 	queue_redraw()
 
 
@@ -551,6 +566,11 @@ func _handle_tap(point: Vector2) -> void:
 
 func _studio_tap(point: Vector2) -> void:
 	var y := point.y
+	# Any other action invalidates a pending destructive confirmation.
+	var clear_index := floori((point.x - 6) / ((size.x - 20) / 4.0))
+	if not (y >= size.y - 56 and clear_index == 3):
+		_clear_armed = false
+		_clear_timeout = 0.0
 	if y >= 32 and y <= 80:
 		var header_buttons := _studio_header_rects(size.x)
 		if header_buttons[0].has_point(point):
