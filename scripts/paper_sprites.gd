@@ -12,6 +12,7 @@ const DRESS_RECT := Rect2(180, 347, 180, 204)
 const FOOT_BASELINE := 584.0
 
 static var _cache: Dictionary = {}
+# Cache missing resources too: draw loops must not recheck disk every frame.
 
 
 static func _texture(name: String) -> Texture2D:
