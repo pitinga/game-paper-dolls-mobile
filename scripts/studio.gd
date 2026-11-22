@@ -10,6 +10,8 @@ const AndroidGallery = preload("res://scripts/android_gallery.gd")
 const EXPORT_FOLDER := "user://criacoes"
 const ENTITLEMENT_FILE := "user://paper_dolls_pro.cfg"
 const WARDROBE_HEIGHT := 360.0
+# Never sell duplicated placeholder art. Enable only after unique licensed Pro assets ship.
+const PRO_SALES_ENABLED := false
 
 var state: RefCounted
 var screen := "home"
@@ -306,7 +308,7 @@ func _draw_pro(bounds: Vector2) -> void:
 		_label("✓ PRO ATIVO", Vector2(bounds.x * 0.5, bounds.y - 245), 27, Color("46886c"))
 	else:
 		_action(Rect2(32, bounds.y - 249, bounds.x - 64, 62),
-			"COMPRAR PRO " + billing_price if not billing_price.is_empty() else "COMPRAR PRO", true)
+			"COMPRAS TEMPORARIAMENTE INDISPONÍVEIS" if not PRO_SALES_ENABLED else ("COMPRAR PRO " + billing_price if not billing_price.is_empty() else "COMPRAR PRO"), PRO_SALES_ENABLED)
 		_action(Rect2(32, bounds.y - 173, bounds.x - 64, 56), "RESTAURAR COMPRA", false)
 
 
@@ -536,7 +538,10 @@ func _handle_tap(point: Vector2) -> void:
 			if y < 85:
 				screen = "home"
 			elif y >= size.y - 249 and y < size.y - 187 and not state.owned_pro and not billing_busy:
-				billing.purchase()
+				if PRO_SALES_ENABLED:
+					billing.purchase()
+				else:
+					_show_message("Compras suspensas até termos artes PRO exclusivas.")
 			elif y >= size.y - 173 and y < size.y - 117 and not state.owned_pro and not billing_busy:
 				billing.restore()
 		"games":
