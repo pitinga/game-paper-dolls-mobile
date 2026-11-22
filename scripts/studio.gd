@@ -25,6 +25,7 @@ var toast := ""
 var toast_elapsed := 0.0
 var exported_path := ""
 var gallery_uri := ""
+var _export_key := ""
 var billing: Node
 var billing_price := ""
 var billing_available := false
@@ -131,7 +132,7 @@ func _draw() -> void:
 
 func _toast_rect(bounds: Vector2) -> Rect2:
 	# Nunca esconder o progresso do desafio nem os comandos do guarda-roupa.
-	var y := bounds.y - WARDROBE_HEIGHT - 56 if screen == "studio" else bounds.y - 392.0
+	var y := bounds.y - WARDROBE_HEIGHT - 56 if screen == "studio" else (bounds.y - 66.0 if screen == "home" else (bounds.y - 320.0 if screen == "finish" else bounds.y - 385.0))
 	return Rect2(18, y, bounds.x - 36, 46)
 
 
@@ -146,9 +147,10 @@ func _draw_home(bounds: Vector2) -> void:
 	_action(Rect2(26, bounds.y - 325, bounds.x - 52, 62), "COMEÇAR A VESTIR", true)
 	_action(Rect2(26, bounds.y - 250, bounds.x - 52, 53), "ESCOLHER MODELO", false)
 	_action(Rect2(26, bounds.y - 185, bounds.x - 52, 53), "DESAFIOS DE LOOK", false)
-	_action(Rect2(26, bounds.y - 120, (bounds.x - 62) * 0.5, 49), "PRO", false)
+	_action(Rect2(26, bounds.y - 120, (bounds.x - 62) * 0.5, 49), "MINHAS COMPRAS" if not PRO_SALES_ENABLED and not state.owned_pro else "PRO", false)
 	_action(Rect2(bounds.x * 0.5 + 5, bounds.y - 120, (bounds.x - 62) * 0.5, 49), "MAIS JOGOS", false)
-	_label("Crie • Salve • Compartilhe", Vector2(cx, bounds.y - 21), 14, Color("705066"))
+	if toast.is_empty():
+		_label("Crie • Salve • Compartilhe", Vector2(cx, bounds.y - 21), 14, Color("705066"))
 
 
 func _draw_studio(bounds: Vector2) -> void:
@@ -157,7 +159,7 @@ func _draw_studio(bounds: Vector2) -> void:
 	var header_buttons := _studio_header_rects(bounds.x)
 	_button(header_buttons[0], "‹ VOLTAR")
 	_button(header_buttons[1], "DESAFIO")
-	_button(header_buttons[2], "PRO" if not state.owned_pro else "★ PRO")
+	_button(header_buttons[2], "COMPRAS" if not PRO_SALES_ENABLED and not state.owned_pro else ("PRO" if not state.owned_pro else "★ PRO"))
 	_button(header_buttons[3], "SALVAR")
 	var stage_rect := Rect2(0, 108, bounds.x, stage_height)
 	_draw_portrait_fitted(stage_rect)
@@ -196,7 +198,7 @@ func _draw_wardrobe(bounds: Vector2) -> void:
 		_draw_pill(Rect2(i * width + 3, top + 11, width - 6, 49), Color("ad356c") if selected else Color("f3e3ea"))
 		_label(["Blusas", "Baixo", "Vestidos", "Pés", "Cabelos", "Extras"][i],
 			Vector2((i + 0.5) * width, top + 36), 14, Color.WHITE if selected else Color("4f3045"), width - 6)
-	var items: Array[Dictionary] = Catalog.filtered(category)
+	var items: Array[Dictionary] = _available_items(category)
 	var start := page * 4
 	for i in range(4):
 		var x := 12 + i * ((bounds.x - 24) / 4.0)
@@ -298,7 +300,17 @@ func _draw_finish(bounds: Vector2) -> void:
 	_action(Rect2(40, bounds.y - 105, bounds.x - 80, 53), "CRIAR OUTRO LOOK", false)
 
 
+func _available_items(slot: String) -> Array[Dictionary]:
+	return Catalog.filtered(slot, state.owned_pro or PRO_SALES_ENABLED)
+
+
 func _draw_pro(bounds: Vector2) -> void:
+	if not PRO_SALES_ENABLED and not state.owned_pro:
+		_draw_page_title(bounds, "Minhas compras", "Coleção especial em preparação")
+		_label("Novidades em breve!", Vector2(bounds.x * 0.5, 335), 29, Color("6f4367"))
+		_label("Já comprou? Toque em Restaurar.", Vector2(bounds.x * 0.5, 412), 19, Color("795777"))
+		_action(Rect2(32, bounds.y - 173, bounds.x - 64, 56), "RESTAURAR COMPRA", false)
+		return
 	_draw_page_title(bounds, "Coleção PRO ✦", "Uma compra dentro do mesmo aplicativo")
 	_label("Mais cores, roupas, acessórios", Vector2(bounds.x * 0.5, 250), 26, Color("6f4367"))
 	_label("e cenários especiais!", Vector2(bounds.x * 0.5, 291), 26, Color("6f4367"))
@@ -470,7 +482,7 @@ func _card_at(point: Vector2) -> String:
 	var index := floori((point.x - 12) / ((size.x - 24) / 4.0))
 	if index < 0 or index >= 4:
 		return ""
-	var items: Array[Dictionary] = Catalog.filtered(category)
+	var items: Array[Dictionary] = _available_items(category)
 	var item_index := page * 4 + index
 	return str(items[item_index]["id"]) if item_index < items.size() else ""
 
@@ -555,11 +567,8 @@ func _handle_tap(point: Vector2) -> void:
 		"pro":
 			if y < 85:
 				screen = "home"
-			elif y >= size.y - 249 and y < size.y - 187 and not state.owned_pro and not billing_busy:
-				if PRO_SALES_ENABLED:
-					billing.purchase()
-				else:
-					_show_message("Compras suspensas até termos artes PRO exclusivas.")
+			elif y >= size.y - 249 and y < size.y - 187 and not state.owned_pro and not billing_busy and PRO_SALES_ENABLED:
+				billing.purchase()
 			elif y >= size.y - 173 and y < size.y - 117 and not state.owned_pro and not billing_busy:
 				billing.restore()
 		"games":
@@ -629,7 +638,7 @@ func _studio_tap(point: Vector2) -> void:
 			category = Catalog.CATEGORIES[index]
 			page = 0
 	elif y >= top + 198 and y < top + 245:
-		var count := Catalog.filtered(category).size()
+		var count := _available_items(category).size()
 		var total := maxi(1, ceili(float(count) / 4.0))
 		if point.x < 95:
 			page = posmod(page - 1, total)
@@ -652,25 +661,52 @@ func _on_entitlement_checked(owned: bool) -> void:
 	# Nunca retirar uma compra positiva em caso de consulta vazia/desatualizada.
 	# Isso privilegia quem pagou quando a Play Store não consegue verificar.
 	if owned:
+		var was_owned: bool = state.owned_pro
 		state.owned_pro = true
 		var config := ConfigFile.new()
 		config.set_value("pro", "owned", true)
 		var err := config.save(entitlement_file)
 		if err != OK:
 			push_warning("Não foi possível guardar a compra Pro: " + str(err))
-		_show_message("PRO liberado! A sua compra fica guardada.")
+		if not was_owned:
+			_show_message("PRO liberado! A sua compra fica guardada.")
 	queue_redraw()
 
 
 func share_creation() -> void:
-	if exported_path.is_empty() or not FileAccess.file_exists(exported_path):
+	if exported_path.is_empty() or not FileAccess.file_exists(exported_path) or _export_key != _current_export_key():
 		export_png(true)
 	elif not AndroidGallery.share_image(exported_path, gallery_uri):
 		_show_message("Não foi possível abrir o compartilhamento.")
 
 
+func _current_export_key() -> String:
+	return str([state.model_index, state.background_index, state.color_variant, state.outfit])
+
+
+func _trim_exports() -> void:
+	var directory := DirAccess.open(export_folder)
+	if directory == null:
+		return
+	var files := directory.get_files()
+	files.sort()
+	for i in range(maxi(0, files.size() - 20)):
+		if files[i].begins_with("look_") and files[i].ends_with(".png"):
+			directory.remove(files[i])
+
+
 func export_png(share_after: bool = false) -> void:
 	if _saving:
+		return
+	var current_key := _current_export_key()
+	if current_key == _export_key and not exported_path.is_empty() and FileAccess.file_exists(exported_path):
+		if share_after:
+			if not AndroidGallery.share_image(exported_path, gallery_uri):
+				_show_message("Não foi possível abrir o compartilhamento.")
+		else:
+			if gallery_uri.is_empty():
+				gallery_uri = AndroidGallery.save_png(exported_path)
+			_show_message("Imagem na galeria! ✦" if not gallery_uri.is_empty() else "Guardada no jogo.")
 		return
 	_saving = true
 	_portrait.queue_redraw()
@@ -698,7 +734,9 @@ func export_png(share_after: bool = false) -> void:
 		var error := picture.save_png(path)
 		if error == OK:
 			exported_path = path
-			gallery_uri = AndroidGallery.save_png(path)
+			_export_key = current_key
+			gallery_uri = "" if share_after else AndroidGallery.save_png(path)
+			_trim_exports()
 			if share_after:
 				if not AndroidGallery.share_image(exported_path, gallery_uri):
 					_show_message("Não foi possível abrir o compartilhamento.")
