@@ -19,6 +19,8 @@ jobs:
         with:
           version: 4.7.2
           use-dotnet: false
+      - name: Gerar imagens geométricas sintéticas para o CI público
+        run: godot --headless --path . --script res://tools/create_ci_sprite_fixtures.gd
       - name: Importar recursos
         run: godot --headless --path . --editor --import --quit
       - name: Verificar plugin de cobrança
@@ -27,6 +29,10 @@ jobs:
         run: godot --headless --path . --script res://tests/test_catalog_and_rules.gd
       - name: Testes de toque e exportação
         run: godot --headless --path . --script res://tests/test_studio_integration.gd
+      - name: Testes de layout mobile e recortes
+        run: godot --headless --path . --script res://tests/test_mobile_layout.gd
+      - name: Invariantes de transparência e encaixe visual
+        run: godot --headless --path . --script res://tests/test_visual_regressions.gd
       - name: Garantir isolamento do APK Pro de teste
         run: godot --headless --path . --script res://tests/test_pro_debug_preset.gd
       # Ações NÃO publicam binários. APK/AAB serão gerados em etapa privada.

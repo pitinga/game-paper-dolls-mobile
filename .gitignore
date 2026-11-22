@@ -9,4 +9,8 @@
 android/build/
 android/.build_version
 *.tmp
+# Recortes de imagens recebidas para avaliação privada: não redistribuir
+# enquanto as licenças das pranchas não forem esclarecidas.
+/assets/paper/
+/build/
 

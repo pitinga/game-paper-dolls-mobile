@@ -31,6 +31,10 @@ func _run() -> void:
 		_check(not ids.has(item["id"]), "item sem ID duplicado " + item["id"])
 		ids[item["id"]] = true
 		_check(Catalog.SLOTS.has(item["slot"]), "item sem slot desconhecido")
+		if item["slot"] in ["top", "bottom", "dress", "shoes"] and not item["pro"]:
+			for color in ["azul", "amarelo", "verde", "vermelho", "rosa", "marrom", "bege"]:
+				_check(str(item["name"]).findn(color) == -1,
+					"nome independente da paleta: " + str(item["id"]))
 	var state := StudioState.new()
 	state.storage_path = scratch
 	_check(state.wear("top_00"), "vestir camiseta")
@@ -41,6 +45,8 @@ func _run() -> void:
 	_check(state.outfit["top"] == "top_00" and state.outfit["bottom"] == "bottom_00", "undo restaura conjunto")
 	_check(state.wear("top_01"), "trocar blusa")
 	_check(state.outfit["top"] == "top_01", "nova blusa substitui anterior")
+	_check(state.wear("top_01") and state.outfit["top"] == "", "tocar mesma peça remove")
+	_check(state.undo() and state.outfit["top"] == "top_01", "desfazer remoção recupera peça")
 	_check(not state.wear("pro_dress_00"), "Pro não desbloqueável por ação local")
 	_check(not state.select_background(5), "cenário Pro fica bloqueado")
 	_check(state.save() == OK, "persistência inicial")

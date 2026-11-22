@@ -4,7 +4,7 @@ extends RefCounted
 const SLOTS := ["hair", "top", "bottom", "dress", "shoes", "accessory"]
 const CATEGORIES := ["top", "bottom", "dress", "shoes", "hair", "accessory"]
 const CATEGORY_NAMES := {
-	"top": "Blusas", "bottom": "Calças", "dress": "Vestidos",
+	"top": "Blusas", "bottom": "Shorts e saias", "dress": "Vestidos",
 	"shoes": "Sapatos", "hair": "Cabelos", "accessory": "Acessórios"
 }
 const MODEL_NAMES := ["Lia", "Bia", "Nina", "Duda"]
@@ -12,7 +12,7 @@ const MODEL_SKIN := [
 	Color("f5b68f"), Color("c98060"), Color("8f533f"), Color("e5a47c")
 ]
 const MODEL_HAIR := [
-	Color("745039"), Color("d48346"), Color("29212c"), Color("a24f34")
+	Color("e7c690"), Color("cf6d37"), Color("282125"), Color("86532e")
 ]
 const BACKGROUNDS := [
 	{"name": "Ateliê", "top": Color("ffedf5"), "bottom": Color("ffd7e7"), "pro": false},
@@ -52,10 +52,10 @@ static func _populate() -> void:
 		"shoes": ["tenis", "sandalia", "bota", "sapato", "tenis", "bota"]
 	}
 	var names := {
-		"top": ["Coração", "Azul céu", "Girassol", "Poá", "Listradinha", "Frutinhas", "Borboleta", "Jeans"],
-		"bottom": ["Short rosa", "Calça céu", "Saia sol", "Short lilás", "Saia verde", "Calça terracota", "Saia cereja", "Calça azul"],
-		"dress": ["Doce rosa", "Brisa azul", "Margaridas", "Baile lilás", "Verde mint", "Pôr do sol", "Festa rosa", "Noite azul"],
-		"shoes": ["Tênis rosa", "Sandália azul", "Botas mel", "Sapatinho", "Tênis verde", "Botas laranja"]
+		"top": ["Doce surpresa", "Docinho do mar", "Joaninha", "Corujinha", "Flor do campo", "Joaninha feliz", "Doces", "Cupcake"],
+		"bottom": ["Short esportivo", "Calça de passeio", "Short de verão", "Short leve", "Calça de brincar", "Calça confortável", "Short de praia", "Calça de festa"],
+		"dress": ["Vestido de babados", "Vestido estampado", "Vestido de bolinhas", "Macacão listrado", "Macacão de verão", "Macacão de passeio", "Vestido girassol", "Vestido cereja"],
+		"shoes": ["Tênis com cadarço", "Sandália leve", "Botas de passeio", "Botinhas", "Sapatos de festa", "Sapatilhas"]
 	}
 	for slot in ["top", "bottom", "dress", "shoes"]:
 		for index in range(shapes[slot].size()):
