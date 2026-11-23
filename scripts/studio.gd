@@ -196,10 +196,10 @@ func _draw_wardrobe(bounds: Vector2) -> void:
 	_draw_pill(Rect2(0, top, bounds.x, WARDROBE_HEIGHT), Color("fffafc"))
 	for i in range(Catalog.CATEGORIES.size()):
 		var slot: String = Catalog.CATEGORIES[i]
-		var width := bounds.x / 6.0
+		var width := bounds.x / float(Catalog.CATEGORIES.size())
 		var selected := slot == category
 		_draw_pill(Rect2(i * width + 3, top + 11, width - 6, 49), Color("ad356c") if selected else Color("f3e3ea"))
-		_label(["Blusas", "Baixo", "Vestidos", "Pés", "Cabelos", "Extras"][i],
+		_label(["Blusas", "Baixo", "Vestidos", "Pés", "Extras"][i],
 			Vector2((i + 0.5) * width, top + 36), 14, Color.WHITE if selected else Color("4f3045"), width - 6)
 	var items: Array[Dictionary] = _available_items(category)
 	var start := page * 4
@@ -243,7 +243,7 @@ func _draw_wardrobe(bounds: Vector2) -> void:
 
 
 func _model_total_pages() -> int:
-	return maxi(1, ceili(float(Catalog.MODEL_NAMES.size()) / 4.0))
+	return maxi(1, ceili(float(Catalog.MODEL_SELECTION.size()) / 4.0))
 
 
 func _model_card_rect(slot_on_page: int, bounds: Vector2) -> Rect2:
@@ -255,18 +255,19 @@ func _model_card_rect(slot_on_page: int, bounds: Vector2) -> Rect2:
 
 func _model_index_at(point: Vector2) -> int:
 	for slot in range(4):
-		var index := models_page * 4 + slot
-		if index < Catalog.MODEL_NAMES.size() and _model_card_rect(slot, size).has_point(point):
-			return index
+		var position := models_page * 4 + slot
+		if position < Catalog.MODEL_SELECTION.size() and _model_card_rect(slot, size).has_point(point):
+			return int(Catalog.MODEL_SELECTION[position])
 	return -1
 
 
 func _draw_models(bounds: Vector2) -> void:
-	_draw_page_title(bounds, "Escolha seu modelo", "4 grátis + 10 bonecas kawaii PRO")
+	_draw_page_title(bounds, "Escolha seu modelo", "3 bonecas grátis + 10 exclusivas PRO")
 	for slot in range(4):
-		var index := models_page * 4 + slot
-		if index >= Catalog.MODEL_NAMES.size():
+		var position := models_page * 4 + slot
+		if position >= Catalog.MODEL_SELECTION.size():
 			break
+		var index: int = Catalog.MODEL_SELECTION[position]
 		var rect := _model_card_rect(slot, bounds)
 		_draw_pill(rect, Color("ffecf4") if index == state.model_index else Color.WHITE)
 		Sprites.draw_model_preview(self, index, Rect2(rect.position + Vector2(9, 9),
@@ -276,7 +277,7 @@ func _draw_models(bounds: Vector2) -> void:
 			Vector2(rect.get_center().x, rect.end.y - 14), 19, Color("64445f"))
 	var navigation_y := bounds.y - 103.0
 	_button(Rect2(20, navigation_y, 96, 52), "‹ ANT.")
-	_label("%d/%d  •  %d bonecas" % [models_page + 1, _model_total_pages(), Catalog.MODEL_NAMES.size()],
+	_label("%d/%d  •  %d bonecas" % [models_page + 1, _model_total_pages(), Catalog.MODEL_SELECTION.size()],
 		Vector2(bounds.x * 0.5, navigation_y + 33), 16, Color("64445f"))
 	_button(Rect2(bounds.x - 116, navigation_y, 96, 52), "PRÓX. ›")
 
@@ -335,8 +336,8 @@ func _available_items(slot: String) -> Array[Dictionary]:
 
 func _draw_pro(bounds: Vector2) -> void:
 	if not PRO_SALES_ENABLED and not state.owned_pro:
-		_draw_page_title(bounds, "Minhas compras", "Coleção especial em preparação")
-		_label("Novidades em breve!", Vector2(bounds.x * 0.5, 335), 29, Color("6f4367"))
+		_draw_page_title(bounds, "Minhas compras", "10 bonecas e 150 peças exclusivas")
+		_label("PRO: 10 bonecas e 150 peças!", Vector2(bounds.x * 0.5, 335), 29, Color("6f4367"))
 		_label("Já comprou? Toque em Restaurar.", Vector2(bounds.x * 0.5, 412), 19, Color("795777"))
 		_action(Rect2(32, bounds.y - 173, bounds.x - 64, 56), "RESTAURAR COMPRA", false)
 		return
@@ -345,9 +346,9 @@ func _draw_pro(bounds: Vector2) -> void:
 	_label("e cenários especiais!", Vector2(bounds.x * 0.5, 291), 26, Color("6f4367"))
 	for i in range(4):
 		var x := bounds.x * 0.5 - 143 + i * 95
-		Sprites.draw_item_thumbnail(self, Catalog.filtered("dress")[8 + i], Vector2(x, 410), Vector2(82, 98))
-	_label("Grátis: salvar imagens e usar 4 modelos", Vector2(bounds.x * 0.5, 535), 18, Color("795777"))
-	_label("PRO: compras suspensas até termos artes exclusivas" if not PRO_SALES_ENABLED else "PRO: peças exclusivas e sem anúncios", Vector2(bounds.x * 0.5, 572), 18, Color("795777"))
+		Sprites.draw_item_thumbnail(self, Catalog.filtered_for_model("dress", true, Catalog.KAWAII_MODEL_INDEX)[i], Vector2(x, 410), Vector2(82, 98))
+	_label("Grátis: 3 bonecas originais e 75 peças", Vector2(bounds.x * 0.5, 535), 18, Color("795777"))
+	_label("PRO: coleção de 160 imagens (compra suspensa)" if not PRO_SALES_ENABLED else "PRO: peças exclusivas e sem anúncios", Vector2(bounds.x * 0.5, 572), 18, Color("795777"))
 	_label("Compras restauráveis na Play Store", Vector2(bounds.x * 0.5, 608), 16, Color("98768b"))
 	if state.owned_pro:
 		_label("✓ PRO ATIVO", Vector2(bounds.x * 0.5, bounds.y - 245), 27, Color("46886c"))
@@ -534,7 +535,7 @@ func _tap_target_at(point: Vector2) -> String:
 				for i in range(5):
 					if point.distance_to(Vector2(w * 0.5 - 96 + i * 48, top + 276)) < 24: return "color_%d" % i
 			elif y >= top and y < top + 62:
-				var category_index := floori(point.x / (w / 6.0))
+				var category_index := floori(point.x / (w / float(Catalog.CATEGORIES.size())))
 				if category_index >= 0 and category_index < Catalog.CATEGORIES.size(): return "category_%d" % category_index
 			elif y >= top + 198 and y < top + 245:
 				if point.x < 95: return "page_prev"
@@ -733,7 +734,7 @@ func _studio_tap(point: Vector2) -> void:
 				break
 	elif y < top + 62:
 		_clear_armed = false
-		var index := floori(point.x / (size.x / 6.0))
+		var index := floori(point.x / (size.x / float(Catalog.CATEGORIES.size())))
 		if index >= 0 and index < Catalog.CATEGORIES.size():
 			category = Catalog.CATEGORIES[index]
 			page = 0

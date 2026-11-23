@@ -1,7 +1,5 @@
 extends SceneTree
-## Teste de exportação REAL: executar com display virtual, nunca --headless.
-## LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a godot --path . --script res://tests/test_graphical_export.gd
-
+## REAL PNG exports via XVFB: Free dolls, outfit changes, all-Pro preservation.
 var failures := 0
 
 
@@ -12,7 +10,7 @@ func _initialize() -> void:
 func _check(ok: bool, description: String) -> void:
 	if not ok:
 		failures += 1
-		push_error("FALHOU - " + description)
+		push_error("FALHOU: " + description)
 
 
 func _wait_export(game: Control) -> void:
@@ -22,92 +20,82 @@ func _wait_export(game: Control) -> void:
 		await process_frame
 
 
+func _export(game: Control, label: String) -> Dictionary:
+	game._portrait.queue_redraw()
+	await process_frame
+	await process_frame
+	game.export_png()
+	await _wait_export(game)
+	_check(not game._saving and not game.exported_path.is_empty(), "exportação concluída: " + label)
+	var image := Image.new()
+	var path: String = game.exported_path
+	if not path.is_empty():
+		_check(image.load(path) == OK, "PNG legível: " + label)
+	_check(image.get_size() == Vector2i(540, 640), "540x640: " + label)
+	if not image.is_empty():
+		_check(image.get_pixel(270, 190) != image.get_pixel(15, 15),
+			"boneca renderizada, não fundo vazio: " + label)
+	return {"path": path, "image": image}
+
+
 func _run() -> void:
-	_check(DisplayServer.get_name() != "headless", "exportação requer renderer gráfico real")
+	_check(DisplayServer.get_name() != "headless", "renderer gráfico obrigatório")
 	if failures:
 		quit(1)
 		return
 	root.size = Vector2i(540, 960)
 	var nonce := "%d_%d" % [OS.get_process_id(), Time.get_ticks_usec()]
-	var base := "user://paper_export_graphics_%s" % nonce
+	var base := "user://free_render_%s" % nonce
 	var game: Control = load("res://scenes/main.tscn").instantiate()
 	game.studio_storage_path = base + ".cfg"
 	game.entitlement_file = base + "_pro.cfg"
 	game.export_folder = base + "_images"
 	root.add_child(game)
 	await process_frame
-	_check(game._portrait_view.get_child_count() == 1 and game._portrait.get_parent() == game._portrait_view,
-		"viewport exporta somente a composição, sem controles da interface")
-	game.state.wear("top_00")
-	game._portrait.queue_redraw()
-	await process_frame
-	await process_frame
-	game.export_png()
-	await _wait_export(game)
-	_check(not game._saving and not game.exported_path.is_empty(), "renderer gera PNG obrigatório")
-	var first_path: String = game.exported_path
-	var first_image := Image.new()
-	if not first_path.is_empty():
-		_check(first_image.load(first_path) == OK, "primeiro PNG é legível")
-	_check(first_image.get_size() == Vector2i(540, 640), "composição tem 540x640")
-	if not first_image.is_empty():
-		_check(first_image.get_pixel(270, 190) != first_image.get_pixel(15, 15), "boneca não é uma imagem vazia")
-	var first_corner := first_image.get_pixel(15, 15) if not first_image.is_empty() else Color.BLACK
-	_check(game.state.wear("top_01") and game.state.select_background(1), "troca de roupa e cenário aplicada ao estado")
-	game._portrait.queue_redraw()
-	await process_frame
-	await process_frame
-	game.export_png()
-	await _wait_export(game)
-	_check(not game._saving and not game.exported_path.is_empty(), "troca de look gera novo PNG")
-	var second_path: String = game.exported_path
-	var second_image := Image.new()
-	if not second_path.is_empty():
-		_check(second_image.load(second_path) == OK, "segundo PNG é legível")
-	_check(second_image.get_size() == Vector2i(540, 640), "segunda exportação mantém 540x640")
-	if not second_image.is_empty():
-		_check(second_image.get_pixel(15, 15) != first_corner,
-			"mudar cenário altera os pixels da composição exportada")
-		_check(not first_image.is_empty() and second_image.get_data() != first_image.get_data(),
-			"trocar roupa e cenário gera imagem diferente, sem UI")
-	# Novo conteúdo original: renderizar o modelo Luna com uma roupa cujo PNG
-	# ocupa o MESMO sistema de coordenadas do modelo, sem recorte intermediário.
+	_check(game._portrait_view.get_child_count() == 1 and
+		game._portrait.get_parent() == game._portrait_view,
+		"PNG contém apenas a criação sem botões/UI")
+	_check(game.state.wear("free_top_00_00") and game.state.wear("free_bottom_00_00"),
+		"Amora usa coleção Free")
+	var img_amora: Dictionary = await _export(game, "Amora Free")
+	_check(game.state.wear("free_top_00_01") and game.state.select_background(1),
+		"troca original de roupa/cenário Free")
+	var img_amora2: Dictionary = await _export(game, "Amora outro look")
+	if not img_amora["image"].is_empty() and not img_amora2["image"].is_empty():
+		_check(img_amora["image"].get_data() != img_amora2["image"].get_data(),
+			"alterações Free resultam em PNG diferentes")
+	_check(game.state.select_model(1), "Céu grátis")
+	_check(game.state.wear("free_dress_01_02") and game.state.wear("free_shoes_01_01"),
+		"Céu veste sua coleção exclusiva")
+	var img_ceu: Dictionary = await _export(game, "Céu Free")
+	if not img_ceu["image"].is_empty() and not img_amora2["image"].is_empty():
+		_check(img_ceu["image"].get_data() != img_amora2["image"].get_data(),
+			"duas bonecas Free diferentes produzem PNGs diferentes")
+	_check(game.state.select_model(2), "Mel grátis")
+	_check(game.state.wear("free_dress_02_04") and game.state.wear("free_accessory_02_03"),
+		"Mel veste vestido e colar originais")
+	var img_mel: Dictionary = await _export(game, "Mel Free")
+	if not img_mel["image"].is_empty() and not img_ceu["image"].is_empty():
+		_check(img_mel["image"].get_data() != img_ceu["image"].get_data(),
+			"as três bonecas Free têm imagens distintas")
 	game.state.owned_pro = true
 	_check(game.state.select_model(4) and game.state.wear("pro_kawaii_dress_00") and
-		game.state.wear("pro_kawaii_shoes_00"), "Luna e peças kawaii vestíveis")
-	game._portrait.queue_redraw()
-	await process_frame
-	await process_frame
-	game.export_png()
-	await _wait_export(game)
-	var kawaii_path: String = game.exported_path
-	var kawaii_image := Image.new()
-	if not kawaii_path.is_empty():
-		_check(kawaii_image.load(kawaii_path) == OK, "PNG kawaii exportado legível")
-	_check(kawaii_image.get_size() == Vector2i(540, 640), "exportação kawaii com proporção correta")
-	if not kawaii_image.is_empty():
-		_check(kawaii_image.get_data() != second_image.get_data(), "roupas kawaii visíveis em resultado próprio")
-	# Valida o último modelo, o último vestido e o último acessório no render real.
-	_check(game.state.select_model(13), "Tainá selecionável")
-	_check(game.state.wear("pro_kawaii_dress_24"), "vestido 24 equipado")
-	_check(game.state.wear("pro_kawaii_accessory_49"), "acessório 49 equipado")
-	game._portrait.queue_redraw()
-	await process_frame
-	await process_frame
-	game.export_png()
-	await _wait_export(game)
-	var final_path: String = game.exported_path
-	var final_image := Image.new()
-	if not final_path.is_empty():
-		_check(final_image.load(final_path) == OK, "PNG final PRO legível")
-	_check(final_image.get_size() == Vector2i(540, 640), "último modelo mantém tamanho da composição")
-	if not final_image.is_empty() and not kawaii_image.is_empty():
-		_check(final_image.get_data() != kawaii_image.get_data(),
-			"trocar para Tainá e vestir peças finais gera outro resultado gráfico")
+		game.state.wear("pro_kawaii_shoes_00"), "Luna PRO preservada")
+	var img_luna: Dictionary = await _export(game, "Luna PRO")
+	_check(game.state.select_model(13) and game.state.wear("pro_kawaii_dress_24") and
+		game.state.wear("pro_kawaii_accessory_49"), "Tainá e itens 24/49")
+	var img_taina: Dictionary = await _export(game, "Tainá PRO")
+	if not img_luna["image"].is_empty() and not img_taina["image"].is_empty():
+		_check(img_luna["image"].get_data() != img_taina["image"].get_data(),
+			"modelos Pro continuam renderizando imagens distintas")
 	game.queue_free()
 	await process_frame
-	for file in [first_path, second_path, kawaii_path, final_path, base + ".cfg", base + "_pro.cfg"]:
+	for image in [img_amora, img_amora2, img_ceu, img_mel, img_luna, img_taina]:
+		var file: String = str(image["path"])
 		if not file.is_empty() and FileAccess.file_exists(file):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(file))
-	print("Exportação gráfica: %d falha(s)." % failures)
+	for file in [base + ".cfg", base + "_pro.cfg"]:
+		if FileAccess.file_exists(file):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(file))
+	print("Exportação gráfica Free/PRO: %d falha(s)." % failures)
 	quit(1 if failures else 0)

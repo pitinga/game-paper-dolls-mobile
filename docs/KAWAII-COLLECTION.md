@@ -12,11 +12,11 @@
 
 ## Compatibilidade e segurança
 
-- O jogo **mantém IDs antigos** (`pro_kawaii_*_00`) para preservar looks de versões anteriores.
-- Trocar entre bonecas kawaii mantém o look escolhido; trocar para boneca antiga remove itens incompatíveis.
+- O jogo **mantém IDs PRO antigos** (`pro_kawaii_*_00`) e índices de boneca PRO 4..13 para preservar looks de versões anteriores. Os antigos quatro modelos Free foram retirados por limitações de direitos; o índice legado 3 é reservado e não selecionável.
+- Trocar entre bonecas PRO mantém o look escolhido; trocar para uma boneca Free remove itens incompatíveis. Cada boneca Free tem seus próprios 25 itens e não compartilha roupas com outra boneca.
 - O bloqueio Pro não pode ser burlado por edição do arquivo de looks: o jogo valida direito e categoria antes da restauração.
-- O modo Pro Test só libera conteúdo no preset debug dedicado; **PRO_SALES_ENABLED permanece false** na distribuição normal.
-- O cache das texturas kawaii tem limite de 12 elementos, para não reter todas as 160 imagens em memória durante a navegação.
+- O modo Pro Test só libera conteúdo no preset debug dedicado; **PRO_SALES_ENABLED permanece false** na distribuição normal. A nova coleção Free de 78 PNGs fica em `assets/free_kawaii/` e não contém os 160 PNGs PRO.
+- O cache de texturas Free e PRO tem limite compartilhado de 12 elementos, para não reter 238 imagens grandes em memória durante a navegação.
 
 ## Testes automatizados
 
@@ -32,9 +32,9 @@ Os testes verificam os 160 PNGs, dimensões, transparência nos cantos, IDs úni
 
 ## Aprovação necessária antes de comercializar
 
-1. Testar em aparelho Android as dez bonecas, todas as categorias, os encaixes das roupas e a exportação.
+1. Testar em aparelho Android as três bonecas Free e dez bonecas PRO, todas as categorias, os encaixes das roupas e a exportação.
 2. Revisar a coerência estética dos 39 acessórios gerados por desenho vetorial programático (estilo mais plano que a aquarela das bonecas).
-3. Verificar os direitos de distribuição comercial dos demais recursos usados no aplicativo, especialmente `assets/paper/`, cuja licença ainda não foi comprovada.
+3. Confirmar que todos os recortes de `assets/paper/` permanecem ausentes do build; conferir procedência dos novos assets em `docs/ASSETS-LICENSES.md`.
 4. Testar o fluxo de compra/restauração na Play Store e manter vendas desligadas até a aprovação.
 
 O catálogo kawaii não foi extraído do site recortar.com.br. Parte foi gerada com ferramentas de imagem e parte como desenho vetorial original para este projeto. Não se presume exclusividade registral ou garantia absoluta de inexistência de semelhanças com trabalhos de terceiros.

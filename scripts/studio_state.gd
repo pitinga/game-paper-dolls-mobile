@@ -55,7 +55,7 @@ func reset_outfit() -> void:
 
 
 func select_model(index: int) -> bool:
-	if index < 0 or index >= Catalog.MODEL_NAMES.size():
+	if not Catalog.model_is_selectable(index):
 		return false
 	if Catalog.model_requires_pro(index) and not owned_pro:
 		return false
@@ -156,7 +156,7 @@ func load_saved() -> void:
 	if config.load(storage_path) != OK:
 		return
 	var stored_model := clampi(int(config.get_value("studio", "model", 0)), 0, Catalog.MODEL_NAMES.size() - 1)
-	model_index = 0 if Catalog.model_requires_pro(stored_model) and not owned_pro else stored_model
+	model_index = stored_model if Catalog.model_is_selectable(stored_model) and (owned_pro or not Catalog.model_requires_pro(stored_model)) else 0
 	var stored_bg := clampi(int(config.get_value("studio", "background", 0)), 0, Catalog.BACKGROUNDS.size() - 1)
 	background_index = stored_bg if owned_pro or not bool(Catalog.BACKGROUNDS[stored_bg]["pro"]) else 0
 	color_variant = clampi(int(config.get_value("studio", "color", 0)), 0, 4)

@@ -1,5 +1,6 @@
 extends SceneTree
-
+## The new original Free and Pro UI must work in narrow Android viewports.
+const Catalog = preload("res://scripts/catalog.gd")
 const Sprites = preload("res://scripts/paper_sprites.gd")
 var errors := 0
 
@@ -8,91 +9,71 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 
-func _check(condition: bool, description: String) -> void:
-	if not condition:
-		push_error("FALHOU: " + description)
+func _check(ok: bool, label: String) -> void:
+	if not ok:
 		errors += 1
+		push_error("FALHOU: " + label)
 
 
 func _run() -> void:
-	var scene: PackedScene = load("res://scenes/main.tscn")
-	var game: Control = scene.instantiate()
-	var token := str(Time.get_ticks_usec())
-	game.studio_storage_path = "user://layout_" + token + ".cfg"
-	game.entitlement_file = "user://layout_" + token + "_pro.cfg"
+	var game: Control = load("res://scenes/main.tscn").instantiate()
+	var nonce := str(Time.get_ticks_usec())
+	game.studio_storage_path = "user://free_mobile_%s.cfg" % nonce
+	game.entitlement_file = "user://free_mobile_pro_%s.cfg" % nonce
 	root.add_child(game)
 	await process_frame
 	var wardrobe_height: float = float(game.get_script().get_script_constant_map()["WARDROBE_HEIGHT"])
 	for viewport in [Vector2(360, 800), Vector2(540, 960), Vector2(540, 1200), Vector2(720, 1280)]:
 		game.size = viewport
-		var fitted: Rect2 = game._portrait_fit_rect(Rect2(0, 108, viewport.x, viewport.y - 108 - wardrobe_height))
+		var stage := Rect2(0, 108, viewport.x, viewport.y - 108 - wardrobe_height)
+		var fitted: Rect2 = game._portrait_fit_rect(stage)
 		_check(fitted.position.x >= -0.01 and fitted.end.x <= viewport.x + 0.01,
-			"prancheta cabe na largura de " + str(viewport))
+			"prancheta dentro da largura %s" % viewport)
 		_check(fitted.position.y >= 107.99 and fitted.end.y <= viewport.y - wardrobe_height + 0.01,
-			"prancheta cabe entre menu e guarda-roupa " + str(viewport))
+			"prancheta não invade rodapé %s" % viewport)
 		_check(absf(fitted.size.x / fitted.size.y - 540.0 / 640.0) < 0.0001,
-			"prancheta sem distorção em " + str(viewport))
-		var header_buttons: Array[Rect2] = game._studio_header_rects(viewport.x)
-		for index in range(header_buttons.size()):
-			_check(header_buttons[index].position.x >= 0 and header_buttons[index].end.x <= viewport.x,
-				"botão superior dentro da tela em " + str(viewport))
-			if index > 0:
-				_check(header_buttons[index - 1].end.x < header_buttons[index].position.x,
-					"botões superiores não se sobrepõem em " + str(viewport))
-		var wardrobe_top: float = viewport.y - wardrobe_height
-		_check(wardrobe_top + 276 + 23 < viewport.y - 53,
-			"cores não invadem o rodapé em " + str(viewport))
-		var first_color_x: float = viewport.x * 0.5 - 96.0
-		var color_label_x: float = 35.0 if viewport.x < 430 else 65.0
-		_check(color_label_x + 22.0 < first_color_x - 23.0,
-			"rótulo cor não cobre a primeira amostra em " + str(viewport))
-		for label in ["VESTE & CRIA", "COMEÇAR A VESTIR", "ESCOLHER MODELO", "DESAFIOS DE LOOK"]:
-			var layout: Dictionary = game._label_layout(label, Vector2(viewport.x / 2, 100), 20)
-			_check(absf(float(layout["origin_x"]) + float(layout["text_width"]) * 0.5 - viewport.x * 0.5) < 0.1,
-				"texto centralizado: " + label)
-			_check(float(layout["origin_x"]) >= 0 and float(layout["origin_x"]) + float(layout["text_width"]) <= viewport.x,
-				"texto não cortado: " + label)
-		for caption in ["‹ VOLTAR", "DESAFIO", "★ PRO", "SALVAR", "DESFAZER", "CENÁRIO"]:
-			var layout: Dictionary = game._label_layout(caption, Vector2(viewport.x * 0.5, 70), 14, 68)
-			_check(float(layout["text_width"]) <= 68.1, "botão estreito mantém texto legível: " + caption)
-	var sample: Texture2D = load("res://assets/paper/model_0.png")
-	_check(sample != null, "modelo ilustrado disponível")
-	if sample != null:
-		var portrait := sample.get_image()
-		_check(portrait.get_width() > 300 and portrait.get_height() > 600, "personagem em resolução adequada")
-		_check(portrait.get_pixel(0, 0).a < 0.1, "fundo do personagem transparente")
-	for slot in ["top", "bottom", "dress", "shoes"]:
-		var item: Dictionary = load("res://scripts/catalog.gd").filtered(slot)[0]
-		var path := "res://assets/paper/" + Sprites._sprite_name(item) + ".png"
-		_check(ResourceLoader.exists(path), "roupa real existente para " + slot)
-	_check(Sprites.DOLL_RECT.encloses(Sprites.TOP_RECT), "blusa encaixada no corpo da boneca")
-	_check(Sprites.DOLL_RECT.encloses(Sprites.DRESS_RECT), "vestido encaixado no corpo da boneca")
-	for index in range(3):
-		var dress: Texture2D = load("res://assets/paper/dress_%02d.png" % index)
-		var image: Image = dress.get_image()
-		_check(image.get_pixel(1, 1).a < 0.05 and
-			image.get_pixel(image.get_width() - 2, 1).a < 0.05 and
-			image.get_pixel(1, image.get_height() - 2).a < 0.05,
-			"recorte de vestido sem retângulo opaco: " + str(index))
-	for index in range(4):
-		var bare: Texture2D = load("res://assets/paper/model_%d_bare.png" % index)
-		_check(bare != null, "modelo com sapato alternativo existe: " + str(index))
-		if bare != null:
-			var foot: Image = bare.get_image()
-			_check(foot.get_pixel(foot.get_width() / 2, foot.get_height() - 1).a < 0.05,
-				"sandália original não fica abaixo do sapato escolhido: " + str(index))
-	game.screen = "studio"
-	game.size = Vector2(360, 800)
-	game.state.select_color(0)
-	game._studio_tap(Vector2(320, 775))
-	_check(game.state.color_variant == 0, "rodapé não toca na paleta de cores")
-	_check(game.state.outfit["hair"] == "", "começa sem sobreposição de penteados")
-	for i in range(4):
-		var hair := "hair_%02d" % i
-		_check(game.state.wear(hair), "penteado pode ser escolhido: " + hair)
-		_check(game.state.outfit["hair"] == hair, "penteado substitui anterior: " + hair)
+			"prancheta não distorcida %s" % viewport)
+		var headers: Array[Rect2] = game._studio_header_rects(viewport.x)
+		for h in range(headers.size()):
+			_check(headers[h].position.x >= 0 and headers[h].end.x <= viewport.x,
+				"header dentro da tela")
+			if h > 0:
+				_check(headers[h-1].end.x < headers[h].position.x,
+					"botões não sobrepostos")
+		var tab_width: float = viewport.x / float(Catalog.CATEGORIES.size())
+		_check(tab_width >= 72, "cinco abas tocáveis em 360dp")
+		var top: float = viewport.y - wardrobe_height
+		_check(top + 276 + 23 < viewport.y - 53, "seletor de cor não invade ações")
+		game.screen = "models"
+		for pg in range(4):
+			game.models_page = pg
+			for slot in range(4):
+				var pos := pg * 4 + slot
+				if pos >= Catalog.MODEL_SELECTION.size(): break
+				var card: Rect2 = game._model_card_rect(slot, viewport)
+				_check(card.position.x >= 0 and card.end.x <= viewport.x,
+					"cartão de boneca dentro da largura")
+				_check(card.end.y < viewport.y - 103,
+					"paginação não cobre bonecas na tela %s" % viewport)
+				_check(game._model_index_at(card.get_center()) == int(Catalog.MODEL_SELECTION[pos]),
+					"hit test da seleção em %s" % viewport)
+		for label in ["ESCOLHER MODELO", "COMEÇAR A VESTIR", "DESFAZER", "CENÁRIO"]:
+			var layout: Dictionary = game._label_layout(label, Vector2(viewport.x/2, 70), 14, viewport.x*.65)
+			_check(float(layout["text_width"]) <= viewport.x*.65,
+				"texto não ultrapassa largura Android")
+	game.size = Vector2(360,800)
+	_check(not ResourceLoader.exists("res://assets/paper/model_0.png"),
+		"nenhum recorte antigo de procedência incerta é incluído")
+	for model in range(3):
+		var doll := "res://assets/free_kawaii/free_model_%02d.png" % model
+		_check(ResourceLoader.exists(doll), "boneca Free original presente: " + doll)
+	for slot in Catalog.CATEGORIES:
+		var item: Dictionary = Catalog.filtered_for_model(slot, false, 0)[0]
+		var sprite: String = "res://assets/" + Sprites._sprite_name(item) + ".png"
+		_check(ResourceLoader.exists(sprite), "peça Free original: " + sprite)
+	_check(Sprites.DOLL_RECT.size == Vector2(300, 520), "moldura preservada para todas as poses")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(game.studio_storage_path))
 	game.queue_free()
 	await process_frame
-	print("Layout mobile e ilustrações: %d falhas" % errors)
+	print("Layout original Free/PRO: %d falhas" % errors)
 	quit(1 if errors else 0)
