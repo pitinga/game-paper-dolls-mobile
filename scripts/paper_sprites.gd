@@ -13,17 +13,31 @@ const PANTS_RECT := Rect2(216, 439, 108, 129)
 const DRESS_RECT := Rect2(180, 347, 180, 204)
 const FOOT_BASELINE := 584.0
 
+const KAWAII_TEXTURE_CACHE_LIMIT := 12
 static var _cache: Dictionary = {}
+static var _kawaii_lru: Array[String] = []
 static var _kawaii_bounds: Dictionary = {}
-# Cache missing resources too: draw loops must not recheck disk every frame.
+# Sprites full-canvas 1024x1536 podem ocupar vários MB em GPU.
+# Manter somente os 12 mais recentes evita acumular 160 texturas no Android.
+# Ausência de recursos também é memorizada (sem novas buscas no disco).
 
 
 static func _texture(name: String) -> Texture2D:
 	if _cache.has(name):
+		if name.begins_with("kawaii/") and _cache[name] != null:
+			_kawaii_lru.erase(name)
+			_kawaii_lru.append(name)
 		return _cache[name]
-	var path := ("res://assets/kawaii/" + name.trim_prefix("kawaii/") + ".png") if name.begins_with("kawaii/") else (FOLDER + name + ".png")
-	var result: Texture2D = load(path) if ResourceLoader.exists(path) else null
+	var kawaii := name.begins_with("kawaii/")
+	var path := ("res://assets/kawaii/" + name.trim_prefix("kawaii/") + ".png") if kawaii else (FOLDER + name + ".png")
+	var result: Texture2D = null
+	if ResourceLoader.exists(path):
+		result = ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE) if kawaii else load(path)
 	_cache[name] = result
+	if kawaii and result != null:
+		_kawaii_lru.append(name)
+		while _kawaii_lru.size() > KAWAII_TEXTURE_CACHE_LIMIT:
+			_cache.erase(_kawaii_lru.pop_front())
 	return result
 
 
