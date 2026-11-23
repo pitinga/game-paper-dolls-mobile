@@ -28,17 +28,32 @@ jobs:
           unzip -q "${FILE}"
           sudo install "Godot_v${VERSION}_linux.x86_64" /usr/local/bin/godot
           godot --version | grep -q '^4\.7\.2\.stable'
-      - name: Gerar imagens geométricas sintéticas para o CI público
-        run: godot --headless --path . --script res://tools/create_ci_sprite_fixtures.gd
+      - name: Verificar isolamento e inventário das artes originais
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          free=list(Path('assets/free_kawaii').glob('*.png'))
+          pro=list(Path('assets/kawaii').glob('*.png'))
+          assert len(free)==78, f"Free assets: {len(free)}, esperado 78"
+          assert len(pro)==160, f"PRO assets: {len(pro)}, esperado 160"
+          assert not list(Path('assets/paper').glob('*')), "Antigos recortes proibidos no checkout"
+          source=' '.join(p.read_text() for p in Path('scripts').glob('*.gd'))
+          assert 'res://assets/paper' not in source, "Referência a sprites de terceiros no runtime"
+          print('Inventário: 78 Free + 160 PRO, 0 recortes legados')
+          PY
       - name: Importar recursos
         run: godot --headless --path . --editor --import --quit
       - name: Verificar plugin de cobrança
         run: (cd addons/GodotGooglePlayBilling && sha256sum -c SHA256SUMS)
       - name: Testes de catálogo e regras
         run: godot --headless --path . --script res://tests/test_catalog_and_rules.gd
+      - name: Validar 78 sprites Free com três poses originais
+        run: godot --headless --path . --script res://tests/test_free_kawaii_assets.gd
       - name: Validar sprites autorais kawaii e compatibilidade de poses
         run: godot --headless --path . --script res://tests/test_kawaii_assets.gd
-      - name: Navegação e seleção da coleção Kawaii PRO
+      - name: Navegação e seleção das coleções Free e PRO
         run: godot --headless --path . --script res://tests/test_kawaii_navigation.gd
       - name: Testes de toque e exportação
         run: godot --headless --path . --script res://tests/test_studio_integration.gd
@@ -48,7 +63,7 @@ jobs:
         env:
           LIBGL_ALWAYS_SOFTWARE: "1"
         run: xvfb-run -a godot --path . --script res://tests/test_graphical_export.gd
-      - name: Testes de layout mobile e recortes
+      - name: Layout mobile e recortes originais
         run: godot --headless --path . --script res://tests/test_mobile_layout.gd
       - name: Invariantes de transparência e encaixe visual
         run: godot --headless --path . --script res://tests/test_visual_regressions.gd
