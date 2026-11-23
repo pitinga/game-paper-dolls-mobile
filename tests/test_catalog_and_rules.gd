@@ -107,7 +107,7 @@ func _run() -> void:
 	var not_owned := StudioState.new()
 	not_owned.storage_path = path
 	not_owned.load_saved()
-	_check(not_owned.model_index == 0 and not_owned.outfit["dress"].is_empty() == false,
+	_check(not_owned.model_index == 0 and not_owned.outfit["dress"] == "",
 		"arquivo alterado não libera PRO")
 	fake.set_value("studio", "model", 3)
 	fake.save(path)
