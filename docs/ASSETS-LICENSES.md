@@ -1,32 +1,27 @@
-# Proveniência das ilustrações — Veste & Cria
+# Proveniência de imagens — Veste & Cria
 
-Situação em 22/11/2026: **não liberadas para distribuição pública**.
+**Atualizado em 23/11/2026.** O aplicativo agora usa **apenas o acervo original produzido para o projeto**, sem os recortes das quatro pranchas externas utilizados nos primeiros protótipos.
 
-As quatro pranchas `01-1000347301.jpg`, `02-1000347300.jpg`,
-`03-1000347299.jpg` e `04-1000347298.jpg` foram fornecidas pelo solicitante
-como referências visuais. Ele indicou a página
-<https://recortar.com.br/bonecas-de-papel/>. Isso **não comprova autoria,
-titularidade, permissão para criar derivados nem licença comercial**; a página
-também menciona inspiração no Pinterest. Não inferir que imprimir gratuitamente
-autorize usar as imagens em um aplicativo.
+| Acervo | Arquivos | Origem / uso |
+| --- | ---: | --- |
+| `assets/free_kawaii/` | 78 PNGs (3 bonecas e 75 itens) | Gerador vetorial original do projeto, `tools/generate_free_kawaii.py` |
+| `assets/kawaii/` | 160 PNGs (10 bonecas e 150 itens) | Ilustrações originalmente produzidas para o projeto com ferramentas de imagem, com 39 acessórios finais gerados como vetores originais |
+| `assets/icon.svg` | 1 SVG | Ícone original do aplicativo |
 
-| Grupo de arquivos locais | Origem fornecida | Status |
-| --- | --- | --- |
-| `model_0`, `top_00..02`, `bottom_00..02`, `dress_00`, `dress_03`, `dress_06`, `shoes_00`, `shoes_02` | Prancha `01-1000347301.jpg` | Restrito a avaliação privada |
-| `model_1`, `top_03..05`, `bottom_03..04`, `dress_01`, `dress_04`, `shoes_01`, `shoes_04` | Prancha `02-1000347300.jpg` | Restrito a avaliação privada |
-| `model_2`, `top_06..07`, `bottom_05..07`, `dress_02`, `dress_05`, `dress_07`, `shoes_03`, `shoes_05` | Prancha `03-1000347299.jpg` | Restrito a avaliação privada |
-| `model_3`, `accessory_00..02` | Prancha `04-1000347298.jpg` | Restrito a avaliação privada |
+Os dois catálogos são distintos: **nenhum dos 160 PNGs PRO é classificado como gratuito**. As roupas Free foram desenhadas com sistema de coordenadas comum à sua respectiva boneca. Os PNGs são separados do código licenciado sob MIT. Esta documentação descreve a procedência, **não garante exclusividade registral nem ausência absoluta de semelhanças acidentais com trabalhos de terceiros**.
 
-`model_*_bare` são variantes técnicas derivadas do modelo correspondente.
-Todas as imagens derivadas ficam em `assets/paper/`, ignorado pelo Git. O script
-`tools/extract_paper_sprites.sh` documenta os recortes mecânicos, sem incluir
-pixels das pranchas. No CI público, `tools/create_ci_sprite_fixtures.gd` cria
-**figuras geométricas sintéticas** para exercitar o código; não comprova o
-acabamento da arte real.
+## Substituição de artes externas
 
-Para publicar APK, AAB ou peças promocionais: obter autorização escrita dos
-respectivos titulares abrangendo reprodução, modificação, redistribuição no
-app e uso comercial **ou** substituir integralmente as ilustrações por arte
-original com licença documentada. Registrar autor, licença, data, escopo e
-comprovante de cada substituição. Não incluir estas quatro pranchas no GitHub
-público ou em artefatos de CI público.
+Os recortes antigos eram associados às quatro pranchas `01-1000347301.jpg`, `02-1000347300.jpg`, `03-1000347299.jpg` e `04-1000347298.jpg`, inicialmente apresentadas como referências de <https://recortar.com.br/bonecas-de-papel/>. As autorizações para redistribuição comercial e modificação não foram comprovadas. Por esse motivo:
+
+1. Todos os modelos e itens antigos (`model_0..3`, `top_00...`, `dress_00...` etc.) foram retirados do catálogo jogável.
+2. `scripts/paper_sprites.gd` não carrega mais nenhum arquivo de `assets/paper/`.
+3. Os utilitários `tools/extract_paper_sprites.sh` e `tools/create_ci_sprite_fixtures.gd` foram excluídos.
+4. O pipeline de teste **falha** se sprites externos aparecerem no checkout ou se o código runtime voltar a mencionar `res://assets/paper/`.
+5. `assets/paper/` permanece no `.gitignore` para evitar uma inclusão acidental de arquivos locais legados.
+
+Os antigos PNGs nunca foram commitados neste repositório público, portanto não existem arquivos binários antigos no histórico atual que precisem ser apagados. Quem possuir cópias locais fora do Git deve excluí-las separadamente antes de distribuir um build.
+
+## Verificação antes de comercializar
+
+Mesmo com a procedência substituída, são necessárias verificações de acabamento visual, sobreposição de camadas, memória no Android, revisão dos acessórios vetoriais PRO e políticas da Play Store. A cobrança permanece desabilitada até a aprovação dessas etapas.
