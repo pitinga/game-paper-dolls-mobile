@@ -50,7 +50,7 @@ func _run() -> void:
 			for slot in range(4):
 				var pos := pg * 4 + slot
 				if pos >= Catalog.MODEL_SELECTION.size(): break
-				var card := game._model_card_rect(slot, viewport)
+				var card: Rect2 = game._model_card_rect(slot, viewport)
 				_check(card.position.x >= 0 and card.end.x <= viewport.x,
 					"cartão de boneca dentro da largura")
 				_check(card.end.y < viewport.y - 103,
