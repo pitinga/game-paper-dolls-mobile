@@ -1,0 +1,1180 @@
+{
+  "catalog": "Veste & Cria PRO kawaii",
+  "target": {
+    "dolls": 10,
+    "tops": 25,
+    "bottoms": 25,
+    "dresses": 25,
+    "shoes": 25,
+    "accessories": 50
+  },
+  "already_existing": [
+    "pro_kawaii_top_00",
+    "pro_kawaii_top_01",
+    "pro_kawaii_bottom_00",
+    "pro_kawaii_dress_00",
+    "pro_kawaii_shoes_00"
+  ],
+  "planned": [
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_02",
+      "filename": "assets/kawaii/pro_kawaii_top_02.png",
+      "name": "Cardigã menta de morangos",
+      "design": "mint cropped cardigan with tiny embroidered strawberries and ivory pearl buttons",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_03",
+      "filename": "assets/kawaii/pro_kawaii_top_03.png",
+      "name": "Moletom rosa de coelho",
+      "design": "soft pink cropped hoodie with a tiny bunny embroidery and cream drawstrings",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_04",
+      "filename": "assets/kawaii/pro_kawaii_top_04.png",
+      "name": "Blusa de linho rendada",
+      "design": "ivory linen blouse with scalloped lace peter-pan collar and short flutter sleeves",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_05",
+      "filename": "assets/kawaii/pro_kawaii_top_05.png",
+      "name": "Jaqueta esportiva turquesa",
+      "design": "teal zip-up sporty jacket with tiny embroidered star patches and striped cuffs",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_06",
+      "filename": "assets/kawaii/pro_kawaii_top_06.png",
+      "name": "Suéter amarelo margaridas",
+      "design": "butter-yellow knitted sweater with daisy cable-knit pattern and ribbed hem",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_07",
+      "filename": "assets/kawaii/pro_kawaii_top_07.png",
+      "name": "Camiseta coral marinheira",
+      "design": "coral striped sailor t-shirt with delicate blue neckerchief and short sleeves",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_08",
+      "filename": "assets/kawaii/pro_kawaii_top_08.png",
+      "name": "Poncho lilás estrelado",
+      "design": "lavender cape-sleeve poncho top with scalloped hem and embroidered pastel stars",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_09",
+      "filename": "assets/kawaii/pro_kawaii_top_09.png",
+      "name": "Jaqueta jeans corações",
+      "design": "sky blue denim cropped jacket with heart-shaped patch pockets and tiny stitched seams",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_10",
+      "filename": "assets/kawaii/pro_kawaii_top_10.png",
+      "name": "Quimono floral rosé",
+      "design": "rose-pink floral kimono blouse with wide short sleeves and a thin waist sash",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_11",
+      "filename": "assets/kawaii/pro_kawaii_top_11.png",
+      "name": "Blusa de bolinhas menta",
+      "design": "mint polka-dot blouse with ruffled sleeves and delicate cream scalloped neckline",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_12",
+      "filename": "assets/kawaii/pro_kawaii_top_12.png",
+      "name": "Moletom sol sorridente",
+      "design": "coral cozy crewneck sweatshirt with small hand-embroidered smiling sun",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_13",
+      "filename": "assets/kawaii/pro_kawaii_top_13.png",
+      "name": "Túnica lilás de botões",
+      "design": "lilac long-sleeve tunic with softly flared hem and tiny decorative pearl buttons",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_14",
+      "filename": "assets/kawaii/pro_kawaii_top_14.png",
+      "name": "Regata de renda creme",
+      "design": "cream lace camisole with sweet ribbon bows, thin straps and embroidered edges",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_15",
+      "filename": "assets/kawaii/pro_kawaii_top_15.png",
+      "name": "Blusa botânica esmeralda",
+      "design": "emerald green short-sleeve cotton blouse with small leafy embroidery and rounded collar",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_16",
+      "filename": "assets/kawaii/pro_kawaii_top_16.png",
+      "name": "Blusa rosa de pérolas",
+      "design": "blush pink off-shoulder puff-sleeve blouse with delicate pearl edging",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_17",
+      "filename": "assets/kawaii/pro_kawaii_top_17.png",
+      "name": "Jaqueta arco-íris pastel",
+      "design": "pastel rainbow varsity jacket with white ribbed cuffs and tiny cloud patch",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_18",
+      "filename": "assets/kawaii/pro_kawaii_top_18.png",
+      "name": "Suéter azul de corações",
+      "design": "periwinkle turtleneck knitted sweater with cream heart motifs and long sleeves",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_19",
+      "filename": "assets/kawaii/pro_kawaii_top_19.png",
+      "name": "Blusa xadrez de cerejas",
+      "design": "soft red-and-cream gingham puff-sleeve blouse with little cherry embroidery",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_20",
+      "filename": "assets/kawaii/pro_kawaii_top_20.png",
+      "name": "Cardigã limão de flores",
+      "design": "pale lemon cardigan with flower-shaped buttons and miniature patch pockets",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_21",
+      "filename": "assets/kawaii/pro_kawaii_top_21.png",
+      "name": "Blusa de praia listrada",
+      "design": "aquamarine breezy striped beach cover-up blouse with short sleeves and tassel hem",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_22",
+      "filename": "assets/kawaii/pro_kawaii_top_22.png",
+      "name": "Bolero de veludo ameixa",
+      "design": "plum velvet short party bolero with small golden stars and puff shoulders",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_23",
+      "filename": "assets/kawaii/pro_kawaii_top_23.png",
+      "name": "Blusa pêssego de borboleta",
+      "design": "pastel peach blouse with butterfly applique, short ruffle sleeves and softly flared hem",
+      "anchor": "torso"
+    },
+    {
+      "slot": "top",
+      "id": "pro_kawaii_top_24",
+      "filename": "assets/kawaii/pro_kawaii_top_24.png",
+      "name": "Blusa jardineira turquesa",
+      "design": "turquoise pinafore-style bib top with flower buttons and cute ivory straps",
+      "anchor": "torso"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_01",
+      "filename": "assets/kawaii/pro_kawaii_bottom_01.png",
+      "name": "Saia plissada menta",
+      "design": "mint pleated mini skirt with embroidered daisies and scalloped hem",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_02",
+      "filename": "assets/kawaii/pro_kawaii_bottom_02.png",
+      "name": "Short jeans corações",
+      "design": "sky blue denim shorts with heart-shaped pockets and contrast stitching",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_03",
+      "filename": "assets/kawaii/pro_kawaii_bottom_03.png",
+      "name": "Bloomer xadrez rosa",
+      "design": "pink gingham high-waist bubble bloomers with little ivory bows",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_04",
+      "filename": "assets/kawaii/pro_kawaii_bottom_04.png",
+      "name": "Calça pantacourt lilás",
+      "design": "lavender wide-leg culottes with soft pleats and cream waist ribbon",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_05",
+      "filename": "assets/kawaii/pro_kawaii_bottom_05.png",
+      "name": "Saia de renda creme",
+      "design": "cream layered lace ruffle skirt with embroidered flower trim",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_06",
+      "filename": "assets/kawaii/pro_kawaii_bottom_06.png",
+      "name": "Calça jogger coral",
+      "design": "coral cotton jogger pants with tiny star patches and ankle cuffs",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_07",
+      "filename": "assets/kawaii/pro_kawaii_bottom_07.png",
+      "name": "Saia tutu amarelo",
+      "design": "butter-yellow ballet tulle tutu skirt with layered petals",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_08",
+      "filename": "assets/kawaii/pro_kawaii_bottom_08.png",
+      "name": "Short marinheiro azul",
+      "design": "sky-blue sailor shorts with decorative ivory buttons",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_09",
+      "filename": "assets/kawaii/pro_kawaii_bottom_09.png",
+      "name": "Calça verde de laços",
+      "design": "sage-green comfortable straight pants with tiny ankle bows",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_10",
+      "filename": "assets/kawaii/pro_kawaii_bottom_10.png",
+      "name": "Saia morango pêssego",
+      "design": "peach tiered mini skirt with tiny red strawberry print",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_11",
+      "filename": "assets/kawaii/pro_kawaii_bottom_11.png",
+      "name": "Calça boca de sino",
+      "design": "periwinkle flared trousers with little embroidered daisies at hem",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_12",
+      "filename": "assets/kawaii/pro_kawaii_bottom_12.png",
+      "name": "Saia floral rosé",
+      "design": "rose floral a-line cotton skirt with ribbon waistband",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_13",
+      "filename": "assets/kawaii/pro_kawaii_bottom_13.png",
+      "name": "Saia tênis menta",
+      "design": "mint scalloped tennis skirt with miniature white stitched hearts",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_14",
+      "filename": "assets/kawaii/pro_kawaii_bottom_14.png",
+      "name": "Short lilás bordado",
+      "design": "lilac high-waist shorts with miniature white flower embroidery",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_15",
+      "filename": "assets/kawaii/pro_kawaii_bottom_15.png",
+      "name": "Jeans patchwork azul",
+      "design": "blue patchwork jeans with tiny heart knees and soft rolled cuffs",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_16",
+      "filename": "assets/kawaii/pro_kawaii_bottom_16.png",
+      "name": "Bloomer laço creme",
+      "design": "cream bubble shorts with lace trim and centered dusty-rose bow",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_17",
+      "filename": "assets/kawaii/pro_kawaii_bottom_17.png",
+      "name": "Saia veludo outono",
+      "design": "warm terracotta corduroy skirt with delicate autumn leaf embroidery",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_18",
+      "filename": "assets/kawaii/pro_kawaii_bottom_18.png",
+      "name": "Legging turquesa floral",
+      "design": "turquoise capri leggings with little daisy motifs near knees",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_19",
+      "filename": "assets/kawaii/pro_kawaii_bottom_19.png",
+      "name": "Saia rosa em camadas",
+      "design": "pink three-tiered ruffle mini skirt with soft satin ribbons",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_20",
+      "filename": "assets/kawaii/pro_kawaii_bottom_20.png",
+      "name": "Short jardineira lilás",
+      "design": "lavender cute suspender shorts with little front patch pocket",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_21",
+      "filename": "assets/kawaii/pro_kawaii_bottom_21.png",
+      "name": "Short girassol amarelo",
+      "design": "buttercup yellow bubble shorts with embroidered sunflower pockets",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_22",
+      "filename": "assets/kawaii/pro_kawaii_bottom_22.png",
+      "name": "Saia veludo de luas",
+      "design": "deep plum velvet skirt with gold crescent moon motifs",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_23",
+      "filename": "assets/kawaii/pro_kawaii_bottom_23.png",
+      "name": "Saia arco-íris plissada",
+      "design": "pastel rainbow pleated skirt with cloud-white waist trim",
+      "anchor": "hips"
+    },
+    {
+      "slot": "bottom",
+      "id": "pro_kawaii_bottom_24",
+      "filename": "assets/kawaii/pro_kawaii_bottom_24.png",
+      "name": "Pantacourt azul linho",
+      "design": "sky-blue linen culottes with daisy pocket embroidery",
+      "anchor": "hips"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_01",
+      "filename": "assets/kawaii/pro_kawaii_dress_01.png",
+      "name": "Vestido princesa rosa",
+      "design": "powder pink chiffon princess dress with bow at waist and layered ruffle skirt",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_02",
+      "filename": "assets/kawaii/pro_kawaii_dress_02.png",
+      "name": "Vestido lilás floral",
+      "design": "lavender tiered floral sundress with flutter sleeves",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_03",
+      "filename": "assets/kawaii/pro_kawaii_dress_03.png",
+      "name": "Vestido jardineira menta",
+      "design": "mint gingham pinafore dress with ivory puff sleeves and scallop pockets",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_04",
+      "filename": "assets/kawaii/pro_kawaii_dress_04.png",
+      "name": "Vestido de nuvens azul",
+      "design": "sky blue cloud-themed tulle dress with ivory puffy clouds embroidered on skirt",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_05",
+      "filename": "assets/kawaii/pro_kawaii_dress_05.png",
+      "name": "Macacão cerejas pêssego",
+      "design": "peach sleeveless playful romper with tiny cherries and short puff bottoms",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_06",
+      "filename": "assets/kawaii/pro_kawaii_dress_06.png",
+      "name": "Vestido girassol amarelo",
+      "design": "butter yellow sunflower sundress with daisy-strapped shoulders",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_07",
+      "filename": "assets/kawaii/pro_kawaii_dress_07.png",
+      "name": "Vestido festa oceano",
+      "design": "teal sea-wave themed party dress with shimmering aqua layered skirt",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_08",
+      "filename": "assets/kawaii/pro_kawaii_dress_08.png",
+      "name": "Vestido camponesa creme",
+      "design": "cream cottagecore cotton dress with lace edges and embroidered meadow flowers",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_09",
+      "filename": "assets/kawaii/pro_kawaii_dress_09.png",
+      "name": "Vestido bailarina rosé",
+      "design": "dusty rose ballerina tutu dress with satin bodice and layered tulle skirt",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_10",
+      "filename": "assets/kawaii/pro_kawaii_dress_10.png",
+      "name": "Vestido moletom coral",
+      "design": "coral long-sleeve hoodie dress with kangaroo pockets and miniature stars",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_11",
+      "filename": "assets/kawaii/pro_kawaii_dress_11.png",
+      "name": "Vestido renda marfim",
+      "design": "ivory lace celebration dress with modest collar and soft layered skirt",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_12",
+      "filename": "assets/kawaii/pro_kawaii_dress_12.png",
+      "name": "Vestido veludo violeta",
+      "design": "violet velvet winter dress with cream cuffs and snowflake embroidery",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_13",
+      "filename": "assets/kawaii/pro_kawaii_dress_13.png",
+      "name": "Vestido arco-íris",
+      "design": "pastel rainbow stripe frock with cloud applique and puff sleeves",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_14",
+      "filename": "assets/kawaii/pro_kawaii_dress_14.png",
+      "name": "Vestido noite estrelada",
+      "design": "midnight blue party dress with tiny golden stars and layered navy tulle",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_15",
+      "filename": "assets/kawaii/pro_kawaii_dress_15.png",
+      "name": "Vestido marinheiro menta",
+      "design": "mint sailor dress with navy striped collar and pleated skirt",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_16",
+      "filename": "assets/kawaii/pro_kawaii_dress_16.png",
+      "name": "Vestido corações rosa",
+      "design": "blush pink heart-print party dress with ivory satin waist bow",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_17",
+      "filename": "assets/kawaii/pro_kawaii_dress_17.png",
+      "name": "Vestido bolinhas amarelo",
+      "design": "butter yellow polka-dot summer dress with square neckline and flutter hem",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_18",
+      "filename": "assets/kawaii/pro_kawaii_dress_18.png",
+      "name": "Vestido jardim verde",
+      "design": "sage garden apron dress with floral pockets and cream lace collar",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_19",
+      "filename": "assets/kawaii/pro_kawaii_dress_19.png",
+      "name": "Vestido festa borboleta",
+      "design": "lilac butterfly-shaped layered party dress with delicate embroidered wings on skirt",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_20",
+      "filename": "assets/kawaii/pro_kawaii_dress_20.png",
+      "name": "Vestido boho pêssego",
+      "design": "peach bohemian dress with flutter sleeves and small floral border",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_21",
+      "filename": "assets/kawaii/pro_kawaii_dress_21.png",
+      "name": "Vestido praia conchas",
+      "design": "turquoise seashell summer dress with sandy-ivory scalloped hem",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_22",
+      "filename": "assets/kawaii/pro_kawaii_dress_22.png",
+      "name": "Vestido tricô outono",
+      "design": "maroon knitted sweater dress with autumn leaf motif and cream collar",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_23",
+      "filename": "assets/kawaii/pro_kawaii_dress_23.png",
+      "name": "Vestido xadrez azul",
+      "design": "sky blue gingham puff-sleeve dress with tiny ivory buttons",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "dress",
+      "id": "pro_kawaii_dress_24",
+      "filename": "assets/kawaii/pro_kawaii_dress_24.png",
+      "name": "Vestido ballet creme",
+      "design": "cream ballet rehearsal wrap dress with pink satin bow and soft circle skirt",
+      "anchor": "fulloutfit"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_01",
+      "filename": "assets/kawaii/pro_kawaii_shoes_01.png",
+      "name": "Sapatilhas rosa de ballet",
+      "design": "pair of powder pink ballet flats with little satin bows",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_02",
+      "filename": "assets/kawaii/pro_kawaii_shoes_02.png",
+      "name": "Galochas amarelas",
+      "design": "pair of pale yellow rain boots with tiny duck motifs",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_03",
+      "filename": "assets/kawaii/pro_kawaii_shoes_03.png",
+      "name": "Tênis lilás estrelas",
+      "design": "pair of lavender canvas sneakers with white star embroidery and laces",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_04",
+      "filename": "assets/kawaii/pro_kawaii_shoes_04.png",
+      "name": "Sapato azul perolado",
+      "design": "pair of sky-blue Mary Jane shoes with delicate pearl buckles",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_05",
+      "filename": "assets/kawaii/pro_kawaii_shoes_05.png",
+      "name": "Botinhas vermelhas flores",
+      "design": "pair of cherry red ankle boots with tiny flower buckles",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_06",
+      "filename": "assets/kawaii/pro_kawaii_shoes_06.png",
+      "name": "Sandálias menta margarida",
+      "design": "pair of mint green sandals with ivory daisy straps",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_07",
+      "filename": "assets/kawaii/pro_kawaii_shoes_07.png",
+      "name": "Tênis branco de renda",
+      "design": "pair of ivory high-top sneakers with delicate lace motifs",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_08",
+      "filename": "assets/kawaii/pro_kawaii_shoes_08.png",
+      "name": "Mocassins pêssego",
+      "design": "pair of peach loafers with little heart patches",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_09",
+      "filename": "assets/kawaii/pro_kawaii_shoes_09.png",
+      "name": "Botas trilha lilás",
+      "design": "pair of lavender hiking boots with pastel striped laces",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_10",
+      "filename": "assets/kawaii/pro_kawaii_shoes_10.png",
+      "name": "Chinelos nuvem azul",
+      "design": "pair of light blue slippers with puffy cloud embroidery",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_11",
+      "filename": "assets/kawaii/pro_kawaii_shoes_11.png",
+      "name": "Sapatilhas dourado suave",
+      "design": "pair of pale gold party flats with miniature star charm",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_12",
+      "filename": "assets/kawaii/pro_kawaii_shoes_12.png",
+      "name": "Botas arco-íris pastel",
+      "design": "pair of pastel rainbow rain boots with cream soles",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_13",
+      "filename": "assets/kawaii/pro_kawaii_shoes_13.png",
+      "name": "Tênis coral coração",
+      "design": "pair of coral sporty sneakers with white heart side patches",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_14",
+      "filename": "assets/kawaii/pro_kawaii_shoes_14.png",
+      "name": "Sandálias flor rosa",
+      "design": "pair of pink flower sandals with delicate leaf buckles",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_15",
+      "filename": "assets/kawaii/pro_kawaii_shoes_15.png",
+      "name": "Sapatos cereja xadrez",
+      "design": "pair of cherry gingham ballet shoes with ankle strap",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_16",
+      "filename": "assets/kawaii/pro_kawaii_shoes_16.png",
+      "name": "Botas inverno creme",
+      "design": "pair of cream fur-trimmed winter ankle boots with tiny tassels",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_17",
+      "filename": "assets/kawaii/pro_kawaii_shoes_17.png",
+      "name": "Tênis denim azul",
+      "design": "pair of denim blue low-top sneakers with flower embroidery",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_18",
+      "filename": "assets/kawaii/pro_kawaii_shoes_18.png",
+      "name": "Sapatilhas violeta veludo",
+      "design": "pair of violet velvet flats with ivory bow",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_19",
+      "filename": "assets/kawaii/pro_kawaii_shoes_19.png",
+      "name": "Tamancos menta floridos",
+      "design": "pair of mint clogs with tiny flower decorations",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_20",
+      "filename": "assets/kawaii/pro_kawaii_shoes_20.png",
+      "name": "Sandálias pêssego verão",
+      "design": "pair of peach strappy summer sandals with shell charms",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_21",
+      "filename": "assets/kawaii/pro_kawaii_shoes_21.png",
+      "name": "Tênis amarelo girassol",
+      "design": "pair of butter yellow canvas sneakers with sunflower motifs",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_22",
+      "filename": "assets/kawaii/pro_kawaii_shoes_22.png",
+      "name": "Botas plum estrelas",
+      "design": "pair of plum purple ankle boots with small golden star buckles",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_23",
+      "filename": "assets/kawaii/pro_kawaii_shoes_23.png",
+      "name": "Sapatilhas rosé rendadas",
+      "design": "pair of dusty rose lace slippers with satin trim",
+      "anchor": "feet"
+    },
+    {
+      "slot": "shoes",
+      "id": "pro_kawaii_shoes_24",
+      "filename": "assets/kawaii/pro_kawaii_shoes_24.png",
+      "name": "Tênis turquesa borboleta",
+      "design": "pair of turquoise sneakers with butterfly embroidery",
+      "anchor": "feet"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_00",
+      "filename": "assets/kawaii/pro_kawaii_accessory_00.png",
+      "name": "Laço grande rosa",
+      "design": "a large satin pink hair bow centered above the right temple",
+      "anchor": "head"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_01",
+      "filename": "assets/kawaii/pro_kawaii_accessory_01.png",
+      "name": "Coroa de estrelinhas",
+      "design": "a delicate gold crown decorated with three pastel stars",
+      "anchor": "crown"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_02",
+      "filename": "assets/kawaii/pro_kawaii_accessory_02.png",
+      "name": "Tiara margaridas",
+      "design": "a headband of ivory daisies and mint leaves",
+      "anchor": "head"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_03",
+      "filename": "assets/kawaii/pro_kawaii_accessory_03.png",
+      "name": "Óculos coração rosé",
+      "design": "heart-shaped rose-pink glasses aligned over both eyes",
+      "anchor": "eyes"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_04",
+      "filename": "assets/kawaii/pro_kawaii_accessory_04.png",
+      "name": "Colar pérolas",
+      "design": "a delicate necklace of cream pearls with tiny bow pendant",
+      "anchor": "neck"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_05",
+      "filename": "assets/kawaii/pro_kawaii_accessory_05.png",
+      "name": "Bolsa morango",
+      "design": "a strawberry-shaped pink crossbody purse hanging at the doll's side",
+      "anchor": "bag"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_06",
+      "filename": "assets/kawaii/pro_kawaii_accessory_06.png",
+      "name": "Chapéu palha floral",
+      "design": "a cream straw sunhat decorated with mini flowers and pink ribbon",
+      "anchor": "hat"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_07",
+      "filename": "assets/kawaii/pro_kawaii_accessory_07.png",
+      "name": "Óculos sol azul",
+      "design": "pair of round sky-blue sunglasses aligned over both eyes",
+      "anchor": "eyes"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_08",
+      "filename": "assets/kawaii/pro_kawaii_accessory_08.png",
+      "name": "Cachecol lilás",
+      "design": "a cozy lavender scarf draped around neck with soft fringes",
+      "anchor": "neck"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_09",
+      "filename": "assets/kawaii/pro_kawaii_accessory_09.png",
+      "name": "Mochila arco-íris",
+      "design": "a small pastel rainbow backpack slung over one shoulder",
+      "anchor": "bag"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_10",
+      "filename": "assets/kawaii/pro_kawaii_accessory_10.png",
+      "name": "Tiara borboleta",
+      "design": "a pastel lilac butterfly hair headband",
+      "anchor": "head"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_11",
+      "filename": "assets/kawaii/pro_kawaii_accessory_11.png",
+      "name": "Bolsa coração",
+      "design": "a heart-shaped coral handbag with short handle held at right side",
+      "anchor": "bag"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_12",
+      "filename": "assets/kawaii/pro_kawaii_accessory_12.png",
+      "name": "Coroa princesa",
+      "design": "a tiny pink princess crown with opalescent gems",
+      "anchor": "crown"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_13",
+      "filename": "assets/kawaii/pro_kawaii_accessory_13.png",
+      "name": "Colar estrelinha",
+      "design": "gold chain necklace with one tiny glowing golden star pendant",
+      "anchor": "neck"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_14",
+      "filename": "assets/kawaii/pro_kawaii_accessory_14.png",
+      "name": "Laço xadrez cereja",
+      "design": "a red cherry gingham hair bow above left ear",
+      "anchor": "head"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_15",
+      "filename": "assets/kawaii/pro_kawaii_accessory_15.png",
+      "name": "Chapéu menta",
+      "design": "a soft mint bucket hat with daisy applique",
+      "anchor": "hat"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_16",
+      "filename": "assets/kawaii/pro_kawaii_accessory_16.png",
+      "name": "Óculos redondos",
+      "design": "round lavender glasses aligned over both eyes",
+      "anchor": "eyes"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_17",
+      "filename": "assets/kawaii/pro_kawaii_accessory_17.png",
+      "name": "Bolsa gatinho",
+      "design": "a small cream kitten-face handbag carried at left side",
+      "anchor": "bag"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_18",
+      "filename": "assets/kawaii/pro_kawaii_accessory_18.png",
+      "name": "Gorro pompom amarelo",
+      "design": "butter yellow knitted beanie with fluffy cream pompom",
+      "anchor": "hat"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_19",
+      "filename": "assets/kawaii/pro_kawaii_accessory_19.png",
+      "name": "Cachecol corações",
+      "design": "a pastel peach scarf with tiny heart embroidery draped at neck",
+      "anchor": "neck"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_20",
+      "filename": "assets/kawaii/pro_kawaii_accessory_20.png",
+      "name": "Tiara corações",
+      "design": "a pink hairband with two small plush hearts",
+      "anchor": "head"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_21",
+      "filename": "assets/kawaii/pro_kawaii_accessory_21.png",
+      "name": "Bolsa concha",
+      "design": "an aquamarine seashell-shaped purse with pearl clasp at right hip",
+      "anchor": "bag"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_22",
+      "filename": "assets/kawaii/pro_kawaii_accessory_22.png",
+      "name": "Coroa flores",
+      "design": "a flower crown of tiny meadow daisies resting on hair",
+      "anchor": "head"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_23",
+      "filename": "assets/kawaii/pro_kawaii_accessory_23.png",
+      "name": "Pulseira flores",
+      "design": "a small flower charm bracelet positioned on right wrist",
+      "anchor": "wrist"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_24",
+      "filename": "assets/kawaii/pro_kawaii_accessory_24.png",
+      "name": "Laço arco-íris",
+      "design": "a pastel rainbow layered ribbon hair bow",
+      "anchor": "head"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_25",
+      "filename": "assets/kawaii/pro_kawaii_accessory_25.png",
+      "name": "Colar borboleta",
+      "design": "a silver necklace with lilac butterfly pendant at neck",
+      "anchor": "neck"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_26",
+      "filename": "assets/kawaii/pro_kawaii_accessory_26.png",
+      "name": "Chapéu praia rosa",
+      "design": "a wide brim pale pink beach hat with ivory sash",
+      "anchor": "hat"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_27",
+      "filename": "assets/kawaii/pro_kawaii_accessory_27.png",
+      "name": "Bolsa cupcake",
+      "design": "a cupcake-shaped mini purse at right hip with pastel frosting",
+      "anchor": "bag"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_28",
+      "filename": "assets/kawaii/pro_kawaii_accessory_28.png",
+      "name": "Óculos estrelas",
+      "design": "a pair of star-shaped yellow party glasses over eyes",
+      "anchor": "eyes"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_29",
+      "filename": "assets/kawaii/pro_kawaii_accessory_29.png",
+      "name": "Tiara pérolas",
+      "design": "a pearl-studded ivory hairband centered across top of head",
+      "anchor": "head"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_30",
+      "filename": "assets/kawaii/pro_kawaii_accessory_30.png",
+      "name": "Cachecol listrado azul",
+      "design": "a soft sky blue and ivory striped scarf draped around the neck",
+      "anchor": "neck"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_31",
+      "filename": "assets/kawaii/pro_kawaii_accessory_31.png",
+      "name": "Bolsa flor",
+      "design": "a pink daisy-shaped crossbody bag hanging at side",
+      "anchor": "bag"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_32",
+      "filename": "assets/kawaii/pro_kawaii_accessory_32.png",
+      "name": "Coroa sereia",
+      "design": "a small mint seashell tiara with pearl droplets",
+      "anchor": "crown"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_33",
+      "filename": "assets/kawaii/pro_kawaii_accessory_33.png",
+      "name": "Laço veludo ameixa",
+      "design": "a deep plum velvet hair ribbon with long tails",
+      "anchor": "head"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_34",
+      "filename": "assets/kawaii/pro_kawaii_accessory_34.png",
+      "name": "Colar morango",
+      "design": "a tiny strawberry enamel pendant on thin rose-gold necklace",
+      "anchor": "neck"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_35",
+      "filename": "assets/kawaii/pro_kawaii_accessory_35.png",
+      "name": "Chapéu chuva amarelo",
+      "design": "a pale yellow rain hat with folded brim and duck badge",
+      "anchor": "hat"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_36",
+      "filename": "assets/kawaii/pro_kawaii_accessory_36.png",
+      "name": "Bolsa nuvem",
+      "design": "a white fluffy cloud-shaped bag with blue strap at right hip",
+      "anchor": "bag"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_37",
+      "filename": "assets/kawaii/pro_kawaii_accessory_37.png",
+      "name": "Óculos borboleta",
+      "design": "a pair of butterfly-shaped lilac translucent glasses over eyes",
+      "anchor": "eyes"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_38",
+      "filename": "assets/kawaii/pro_kawaii_accessory_38.png",
+      "name": "Tiara folhas verde",
+      "design": "a botanical green leaf hair wreath with tiny flowers",
+      "anchor": "head"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_39",
+      "filename": "assets/kawaii/pro_kawaii_accessory_39.png",
+      "name": "Pulseiras brilhantes",
+      "design": "a stack of pastel friendship bracelets on left wrist",
+      "anchor": "wrist"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_40",
+      "filename": "assets/kawaii/pro_kawaii_accessory_40.png",
+      "name": "Colar lua",
+      "design": "a small gold crescent moon pendant necklace at neck",
+      "anchor": "neck"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_41",
+      "filename": "assets/kawaii/pro_kawaii_accessory_41.png",
+      "name": "Gorro inverno coral",
+      "design": "a warm coral knitted beanie with cream snowflake design",
+      "anchor": "hat"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_42",
+      "filename": "assets/kawaii/pro_kawaii_accessory_42.png",
+      "name": "Bolsa estrela",
+      "design": "a star-shaped gold mini shoulder bag at left hip",
+      "anchor": "bag"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_43",
+      "filename": "assets/kawaii/pro_kawaii_accessory_43.png",
+      "name": "Laço bailarina",
+      "design": "a pale pink tulle ballet bow pinned to hair",
+      "anchor": "head"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_44",
+      "filename": "assets/kawaii/pro_kawaii_accessory_44.png",
+      "name": "Chapéu exploradora",
+      "design": "a tiny sage adventurer hat with butterfly patch",
+      "anchor": "hat"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_45",
+      "filename": "assets/kawaii/pro_kawaii_accessory_45.png",
+      "name": "Colar flor azul",
+      "design": "a periwinkle blue floral pendant necklace at neckline",
+      "anchor": "neck"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_46",
+      "filename": "assets/kawaii/pro_kawaii_accessory_46.png",
+      "name": "Óculos festa dourados",
+      "design": "round pale gold party spectacles aligned over eyes",
+      "anchor": "eyes"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_47",
+      "filename": "assets/kawaii/pro_kawaii_accessory_47.png",
+      "name": "Bolsa joaninha",
+      "design": "a cute red ladybug-shaped purse at right hip",
+      "anchor": "bag"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_48",
+      "filename": "assets/kawaii/pro_kawaii_accessory_48.png",
+      "name": "Tiara cetim menta",
+      "design": "mint satin bow headband with tiny ivory dots",
+      "anchor": "head"
+    },
+    {
+      "slot": "accessory",
+      "id": "pro_kawaii_accessory_49",
+      "filename": "assets/kawaii/pro_kawaii_accessory_49.png",
+      "name": "Cachecol estrela",
+      "design": "an ivory scarf with lavender embroidered stars wrapped around neck",
+      "anchor": "neck"
+    }
+  ]
+}
