@@ -18,6 +18,7 @@ var state: RefCounted
 var screen := "home"
 var category := "top"
 var page := 0
+var models_page := 0
 var active_finger := -99
 var dragging_id := ""
 var drag_pos := Vector2.ZERO
@@ -241,18 +242,43 @@ func _draw_wardrobe(bounds: Vector2) -> void:
 		_button(Rect2(6 + i * w, bottom_y, w - 5, 48), labels[i])
 
 
+func _model_total_pages() -> int:
+	return maxi(1, ceili(float(Catalog.MODEL_NAMES.size()) / 4.0))
+
+
+func _model_card_rect(slot_on_page: int, bounds: Vector2) -> Rect2:
+	var col := slot_on_page % 2
+	var row := floori(float(slot_on_page) / 2.0)
+	var width := (bounds.x - 48.0) * 0.5
+	return Rect2(16 + col * (width + 16), 165 + row * 215, width, 201)
+
+
+func _model_index_at(point: Vector2) -> int:
+	for slot in range(4):
+		var index := models_page * 4 + slot
+		if index < Catalog.MODEL_NAMES.size() and _model_card_rect(slot, size).has_point(point):
+			return index
+	return -1
+
+
 func _draw_models(bounds: Vector2) -> void:
-	_draw_page_title(bounds, "Escolha seu modelo", "Coleção kawaii original ✦ PRO")
-	for index in range(Catalog.MODEL_NAMES.size()):
-		var col := index % 2
-		var row := index / 2
-		var width := (bounds.x - 48) * 0.5
-		var rect := Rect2(16 + col * (width + 16), 165 + row * 215, width, 201)
+	_draw_page_title(bounds, "Escolha seu modelo", "4 grátis + 10 bonecas kawaii PRO")
+	for slot in range(4):
+		var index := models_page * 4 + slot
+		if index >= Catalog.MODEL_NAMES.size():
+			break
+		var rect := _model_card_rect(slot, bounds)
 		_draw_pill(rect, Color("ffecf4") if index == state.model_index else Color.WHITE)
-		Sprites.draw_model_preview(self, index, Rect2(rect.position + Vector2(9, 9), Vector2(width - 18, 159)))
+		Sprites.draw_model_preview(self, index, Rect2(rect.position + Vector2(9, 9),
+			Vector2(rect.size.x - 18, 159)))
 		var locked: bool = Catalog.model_requires_pro(index) and not state.owned_pro
 		_label(Catalog.MODEL_NAMES[index] + (" 🔒" if locked else "") + (" ✓" if index == state.model_index else ""),
-			Vector2(rect.get_center().x, rect.end.y - 14), 20, Color("64445f"))
+			Vector2(rect.get_center().x, rect.end.y - 14), 19, Color("64445f"))
+	var navigation_y := bounds.y - 103.0
+	_button(Rect2(20, navigation_y, 96, 52), "‹ ANT.")
+	_label("%d/%d  •  %d bonecas" % [models_page + 1, _model_total_pages(), Catalog.MODEL_NAMES.size()],
+		Vector2(bounds.x * 0.5, navigation_y + 33), 16, Color("64445f"))
+	_button(Rect2(bounds.x - 116, navigation_y, 96, 52), "PRÓX. ›")
 
 
 func _draw_backgrounds(bounds: Vector2) -> void:
@@ -513,12 +539,17 @@ func _tap_target_at(point: Vector2) -> String:
 			elif y >= top + 198 and y < top + 245:
 				if point.x < 95: return "page_prev"
 				if point.x > w - 95: return "page_next"
-		"models", "background":
+		"models":
 			if y < 85: return "back"
-			var start_y := 165.0 if screen == "models" else 158.0
-			var row_h := 215.0 if screen == "models" else 181.0
-			if y >= start_y:
-				return "item_%d" % (floori((y - start_y) / row_h) * 2 + (0 if point.x < w * 0.5 else 1))
+			if y >= size.y - 103 and y < size.y - 51:
+				if point.x < 116: return "models_prev"
+				if point.x >= w - 116: return "models_next"
+			var model_index := _model_index_at(point)
+			if model_index >= 0: return "model_%d" % model_index
+		"background":
+			if y < 85: return "back"
+			if y >= 158:
+				return "item_%d" % (floori((y - 158) / 181) * 2 + (0 if point.x < w * 0.5 else 1))
 		"challenges":
 			if y < 85: return "back"
 			if y >= size.y - 96: return "challenge_start"
@@ -578,11 +609,14 @@ func _handle_tap(point: Vector2) -> void:
 		"models":
 			if y < 85:
 				screen = "home"
-			elif y >= 165:
-				var col := 0 if point.x < w * 0.5 else 1
-				var row := floori((y - 165) / 215)
-				var index := row * 2 + col
-				if index >= 0 and index < Catalog.MODEL_NAMES.size():
+			elif y >= size.y - 103 and y < size.y - 51:
+				if point.x < 116:
+					models_page = posmod(models_page - 1, _model_total_pages())
+				elif point.x >= w - 116:
+					models_page = posmod(models_page + 1, _model_total_pages())
+			else:
+				var index := _model_index_at(point)
+				if index >= 0:
 					if state.select_model(index):
 						state.save()
 						screen = "studio"
