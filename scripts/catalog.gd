@@ -7,7 +7,8 @@ const CATEGORY_NAMES := {
 	"top": "Blusas", "bottom": "Shorts e saias", "dress": "Vestidos",
 	"shoes": "Sapatos", "hair": "Cabelos", "accessory": "Acessórios"
 }
-const MODEL_NAMES := ["Lia", "Bia", "Nina", "Duda"]
+const MODEL_NAMES := ["Lia", "Bia", "Nina", "Duda", "Luna ✦"]
+const KAWAII_MODEL_INDEX := 4
 const MODEL_SKIN := [
 	Color("f5b68f"), Color("c98060"), Color("8f533f"), Color("e5a47c")
 ]
@@ -84,6 +85,31 @@ static func _populate() -> void:
 			_all.append(_item("pro_%s_%02d" % [slot, index], "Coleção brilho %d" % (index + 1),
 				slot, styles[index % styles.size()], Color(colors[(index + 4) % colors.size()]),
 				motifs[(index + 2) % motifs.size()], tags[(index + 3) % tags.size()], true))
+	# Coleção kawaii totalmente original: PNGs com mesmo canvas e transparência.
+	# Ao contrário da coleção legado, estas quatro peças são exclusivas de fato.
+	var kawaii_pieces := [
+		["top", "Blusa marinheira", "blusa", "parque", "65bfe0"],
+		["bottom", "Short de margaridas", "shorts", "parque", "a68ade"],
+		["dress", "Vestido de morangos", "rodado", "festa", "ff7498"],
+		["shoes", "Sapatilhas de laço", "sapato", "festa", "62be9a"]
+	]
+	for piece in kawaii_pieces:
+		var id := "pro_kawaii_%s_00" % str(piece[0])
+		var item := _item(id, str(piece[1]), str(piece[0]), str(piece[2]),
+			Color(str(piece[4])), "simples", str(piece[3]), true)
+		item["sprite"] = "kawaii/" + id
+		item["model_index"] = KAWAII_MODEL_INDEX
+		_all.append(item)
+
+
+static func model_requires_pro(index: int) -> bool:
+	return index >= KAWAII_MODEL_INDEX
+
+
+static func item_matches_model(item: Dictionary, model_index: int) -> bool:
+	if model_index == KAWAII_MODEL_INDEX:
+		return int(item.get("model_index", -1)) == model_index
+	return not item.has("model_index")
 
 
 static func _item(id: String, title: String, slot: String, style: String, color: Color,
@@ -103,6 +129,14 @@ static func filtered(slot: String, include_pro: bool = true) -> Array[Dictionary
 	var result: Array[Dictionary] = []
 	for item in all_items():
 		if item["slot"] == slot and (include_pro or not bool(item["pro"])):
+			result.append(item)
+	return result
+
+
+static func filtered_for_model(slot: String, include_pro: bool, model_index: int) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for item in filtered(slot, include_pro):
+		if item_matches_model(item, model_index):
 			result.append(item)
 	return result
 

@@ -4,8 +4,8 @@ Jogo de vestir bonecas, em português, feito em **Godot 4.7.2** para Android. O 
 
 ## O que já está implementado
 
-- Escolha de **4 personagens** com tons de pele e cabelos diferentes, mas a mesma base de encaixe de roupas.
-- Guarda-roupa grátis com **30 roupas**, **12 acessórios** e **4 penteados**. Coleção extra de 24 peças Pro.
+- Escolha de **4 personagens grátis** e **1 boneca original kawaii PRO (Luna)**, em pose própria.
+- Guarda-roupa grátis com **30 roupas**, **12 acessórios** e **4 penteados**. Coleção extra legada de 24 peças Pro e **4 novas roupas/calçados kawaii originais**, ainda em expansão.
 - Arrastar com dedo ou tocar na miniatura para vestir; peças se encaixam por categoria. Vestido substitui blusa + parte de baixo.
 - Trocar peça, retirar categoria, variar cores, desfazer e limpar o look.
 - **8 cenários**, sendo 5 grátis e 3 Pro; **5 desafios temáticos** sem cronômetro, com progresso de 0 a 2.
@@ -25,6 +25,7 @@ godot --path .
 ```bash
 godot --headless --path . --editor --import --quit
 godot --headless --path . --script res://tests/test_catalog_and_rules.gd
+godot --headless --path . --script res://tests/test_kawaii_assets.gd
 godot --headless --path . --script res://tests/test_studio_integration.gd
 godot --headless --path . --script res://tests/test_mobile_layout.gd
 godot --headless --path . --script res://tests/test_visual_regressions.gd
@@ -57,6 +58,8 @@ O build Pro de teste é **offline** e não solicita permissão `INTERNET`. A ver
 ## Direitos autorais
 
 As imagens de referência foram fornecidas pelo usuário. Nesta revisão, seus recortes são usados **somente no protótipo privado de avaliação visual**. As imagens não são licenciadas sob a MIT do código. `assets/paper/` está ignorado pelo Git e **não deve entrar em repositório público, APK distribuído ao público ou Play Store sem comprovar autorização dos titulares**; antes do lançamento, obter uma licença de uso adequada ou substituí-los por arte própria licenciável. O CI usa figuras geométricas sintéticas, que testam o código mas não o acabamento da arte. Proveniência e limitações: [ASSETS-LICENSES.md](docs/ASSETS-LICENSES.md). O código de montagem permanece MIT; o plugin Billing tem licença MIT própria em `addons/GodotGooglePlayBilling/LICENSE`.
+
+**Nova coleção original:** os cinco PNGs `assets/kawaii/` foram gerados para este projeto com ChatGPT Images, sem incorporar arquivos do site Recortar ou de artistas terceiros. As artes são distribuídas separadamente do código MIT; consulte [KAWAII-COLLECTION.md](docs/KAWAII-COLLECTION.md). Os itens kawaii só ficam visíveis quando a boneca compatível é selecionada. `PRO_SALES_ENABLED` continua `false`: este primeiro conjunto não conclui o lançamento comercial.
 
 ## Próximos critérios de aceite
 

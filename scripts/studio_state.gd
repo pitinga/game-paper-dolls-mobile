@@ -22,7 +22,7 @@ func _init() -> void:
 
 func wear(id: String) -> bool:
 	var item: Dictionary = Catalog.by_id(id)
-	if item.is_empty() or (bool(item["pro"]) and not owned_pro):
+	if item.is_empty() or (bool(item["pro"]) and not owned_pro) or not Catalog.item_matches_model(item, model_index):
 		return false
 	var slot: String = item["slot"]
 	if outfit.get(slot, "") == id:
@@ -57,10 +57,17 @@ func reset_outfit() -> void:
 func select_model(index: int) -> bool:
 	if index < 0 or index >= Catalog.MODEL_NAMES.size():
 		return false
+	if Catalog.model_requires_pro(index) and not owned_pro:
+		return false
 	if index == model_index:
 		return false
 	_remember()
 	model_index = index
+	# Uma peça desenhada para o corpo kawaii não pode ficar sobre a pose antiga.
+	for slot in Catalog.SLOTS:
+		var item: Dictionary = Catalog.by_id(str(outfit.get(slot, "")))
+		if not item.is_empty() and not Catalog.item_matches_model(item, index):
+			outfit[slot] = ""
 	return true
 
 
@@ -148,7 +155,8 @@ func load_saved() -> void:
 	var config := ConfigFile.new()
 	if config.load(storage_path) != OK:
 		return
-	model_index = clampi(int(config.get_value("studio", "model", 0)), 0, Catalog.MODEL_NAMES.size() - 1)
+	var stored_model := clampi(int(config.get_value("studio", "model", 0)), 0, Catalog.MODEL_NAMES.size() - 1)
+	model_index = 0 if Catalog.model_requires_pro(stored_model) and not owned_pro else stored_model
 	var stored_bg := clampi(int(config.get_value("studio", "background", 0)), 0, Catalog.BACKGROUNDS.size() - 1)
 	background_index = stored_bg if owned_pro or not bool(Catalog.BACKGROUNDS[stored_bg]["pro"]) else 0
 	color_variant = clampi(int(config.get_value("studio", "color", 0)), 0, 4)
@@ -163,7 +171,7 @@ func load_saved() -> void:
 	for slot in Catalog.SLOTS:
 		var stored_id: String = str(config.get_value("outfit", slot, ""))
 		var item: Dictionary = Catalog.by_id(stored_id)
-		outfit[slot] = stored_id if not item.is_empty() and item["slot"] == slot and (owned_pro or not bool(item["pro"])) else ""
+		outfit[slot] = stored_id if not item.is_empty() and item["slot"] == slot and (owned_pro or not bool(item["pro"])) and Catalog.item_matches_model(item, model_index) else ""
 	# Arquivos externos não podem criar roupas incompatíveis entre si.
 	if not outfit["dress"].is_empty():
 		outfit["top"] = ""

@@ -36,6 +36,8 @@ jobs:
         run: (cd addons/GodotGooglePlayBilling && sha256sum -c SHA256SUMS)
       - name: Testes de catálogo e regras
         run: godot --headless --path . --script res://tests/test_catalog_and_rules.gd
+      - name: Validar sprites autorais kawaii e compatibilidade de poses
+        run: godot --headless --path . --script res://tests/test_kawaii_assets.gd
       - name: Testes de toque e exportação
         run: godot --headless --path . --script res://tests/test_studio_integration.gd
       - name: Instalar display virtual para exportação real
