@@ -72,9 +72,9 @@ REVIEWED_LEGACY = {"fix/review-20261122-pro-and-performance":"b4769414cf78138f1b
               for b in branches:
                 name=b["name"]; sha=b["commit"]["sha"]
                 if name in (DEFAULT,"master") or b.get("protected"): continue
-      if REVIEWED_LEGACY.get(name) == sha:
-        remove(name,sha,"reviewed superseded branch; later changes already in main")
-        continue
+                if REVIEWED_LEGACY.get(name) == sha:
+                  remove(name,sha,"reviewed superseded branch; later changes already in main")
+                  continue
                 if merged.get(name)==sha:
                   remove(name,sha,"merged PR verified by head SHA")
                   continue
