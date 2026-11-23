@@ -3,6 +3,8 @@ extends SceneTree
 
 const Catalog = preload("res://scripts/catalog.gd")
 const State = preload("res://scripts/studio_state.gd")
+const Sprites = preload("res://scripts/paper_sprites.gd")
+const Collection = preload("res://scripts/kawaii_collection.gd")
 
 var failures := 0
 
@@ -66,6 +68,14 @@ func _run() -> void:
 		"trocar entre bonecas kawaii preserva acessório")
 	_check(game.state.select_model(0), "trocar para boneca livre")
 	_check(game.state.outfit["accessory"] == "", "trocar tipo de boneca remove recorte incompatível")
+	# Consumir o catálogo inteiro não pode acumular 150 texturas em memória.
+	for spec in Collection.ITEMS.slice(0, 20):
+		var texture: Texture2D = Sprites._texture("kawaii/" + str(spec["id"]))
+		_check(texture != null, "textura do catálogo disponível")
+	_check(Sprites._kawaii_lru.size() <= Sprites.KAWAII_TEXTURE_CACHE_LIMIT,
+		"cache de texturas completo nunca excede o limite")
+	for name in Sprites._kawaii_lru:
+		_check(Sprites._cache.has(name), "LRU mantém índice consistente: " + name)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(game.studio_storage_path))
 	game.queue_free()
 	await process_frame
