@@ -1,0 +1,67 @@
+name: Render Free Kawaii Original Collection
+on:
+  push:
+    branches:
+      - feature/free-kawaii-original-20261123
+    paths:
+      - .github/workflows/render-free-kawaii.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: render-free-kawaii-original
+  cancel-in-progress: false
+jobs:
+  build-art:
+    if: github.ref == 'refs/heads/feature/free-kawaii-original-20261123'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Install original vector-to-PNG renderer
+        run: python3 -m pip install --disable-pip-version-check --break-system-packages --user cairosvg pillow
+      - name: Validate full planned inventory
+        run: |
+          python3 tools/generate_free_kawaii.py --list > /tmp/free-kawaii-plan.json
+          python3 - <<'PY'
+          import json
+          rows=json.load(open('/tmp/free-kawaii-plan.json'))
+          assert len(rows)==78, len(rows)
+          assert len(set(x['file'] for x in rows))==78
+          for doll in range(3):
+              r=[x for x in rows if x['model']==doll]
+              assert len(r)==26, (doll,len(r))
+          PY
+      - name: Generate and individually commit every validated PNG
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/bin:$PATH"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for doll in 0 1 2; do
+            for slot in model top bottom dress shoes accessory; do
+              if [[ "$slot" == "model" ]]; then limit=0; else limit=4; fi
+              for index in $(seq 0 "$limit"); do
+                if [[ "$slot" == "model" ]]; then
+                  filename=$(printf 'free_model_%02d.png' "$doll")
+                else
+                  filename=$(printf 'free_%s_%02d_%02d.png' "$slot" "$doll" "$index")
+                fi
+                file="assets/free_kawaii/$filename"
+                if [[ -f "$file" ]]; then
+                  echo "SKIP persisted: $file"
+                  continue
+                fi
+                python3 tools/generate_free_kawaii.py --doll "$doll" --slot "$slot" --index "$index"
+                test -s "$file"
+                git add -- "$file"
+                git commit -m "assets(free): persist $filename"
+                git push origin HEAD:feature/free-kawaii-original-20261123
+              done
+            done
+          done
+          echo "Individual Free Kawaii PNG commits completed"
