@@ -92,10 +92,12 @@ static func draw_stage(canvas: CanvasItem, state: Object) -> void:
 			draw_item_on_doll(canvas, piece, int(state.color_variant))
 
 
-static func draw_item_on_doll(canvas: CanvasItem, item: Dictionary, _variant: int = 0) -> void:
+static func draw_item_on_doll(canvas: CanvasItem, item: Dictionary, variant: int = 0) -> void:
 	var name := _sprite_name(item)
 	if not name.is_empty():
-		_fit_centered(canvas, name, DOLL_RECT)
+		var tint: Color = [Color.WHITE, Color("ffe7e4"), Color("ece1ff"),
+			Color("e4ffea"), Color("ffe8f5")][clampi(variant, 0, 4)]
+		_fit_centered(canvas, name, DOLL_RECT, tint)
 
 
 static func _visible_bounds(name: String, texture: Texture2D) -> Rect2i:
