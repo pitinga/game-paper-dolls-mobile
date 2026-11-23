@@ -2,15 +2,19 @@ extends RefCounted
 ## Identificadores estáveis: looks antigos continuam legíveis após atualizações.
 
 const KawaiiCollection = preload("res://scripts/kawaii_collection.gd")
+const FreeCollection = preload("res://scripts/free_collection.gd")
 
 const SLOTS := ["hair", "top", "bottom", "dress", "shoes", "accessory"]
-const CATEGORIES := ["top", "bottom", "dress", "shoes", "hair", "accessory"]
+const CATEGORIES := ["top", "bottom", "dress", "shoes", "accessory"]
 const CATEGORY_NAMES := {
 	"top": "Blusas", "bottom": "Shorts e saias", "dress": "Vestidos",
 	"shoes": "Sapatos", "hair": "Cabelos", "accessory": "Acessórios"
 }
-const MODEL_NAMES := ["Lia", "Bia", "Nina", "Duda", "Luna", "Yumi", "Maya", "Clara",
+# Index 3 is intentionally retired to preserve old Pro save indices 4..13.
+# The UI lists MODEL_SELECTION (3 Free + 10 Pro), never the retired model.
+const MODEL_NAMES := ["Amora", "Céu", "Mel", "", "Luna", "Yumi", "Maya", "Clara",
 	"Jade", "Sol", "Amira", "Sofia", "Isis", "Tainá"]
+const MODEL_SELECTION := [0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 const KAWAII_MODEL_INDEX := 4
 const MODEL_SKIN := [
 	Color("f5b68f"), Color("c98060"), Color("8f533f"), Color("e5a47c")
@@ -46,50 +50,25 @@ static func all_items() -> Array[Dictionary]:
 
 
 static func _populate() -> void:
-	var colors := ["ff7498", "65bfe0", "edb551", "a68ade", "62be9a", "ef8e61", "df72b6", "5a9de7"]
-	var tags := ["festa", "praia", "parque", "inverno", "fantasia", "festa", "parque", "praia"]
-	var motifs := ["coracao", "estrela", "flor", "bolinhas", "listras", "fruta", "borboleta", "simples"]
-	var shapes := {
-		"top": ["camiseta", "regata", "manga", "blusa", "cropped", "casaco", "camiseta", "manga"],
-		"bottom": ["shorts", "calca", "shorts", "shorts", "calca", "calca", "shorts", "calca"],
-		"dress": ["rodado", "reto", "rodado", "festa", "reto", "rodado", "festa", "reto"],
-		"shoes": ["tenis", "sandalia", "bota", "sapato", "tenis", "bota"]
-	}
-	var names := {
-		"top": ["Doce surpresa", "Docinho do mar", "Joaninha", "Corujinha", "Flor do campo", "Joaninha feliz", "Doces", "Cupcake"],
-		"bottom": ["Short esportivo", "Calça de passeio", "Short de verão", "Short leve", "Calça de brincar", "Calça confortável", "Short de praia", "Calça de festa"],
-		"dress": ["Vestido de babados", "Vestido estampado", "Vestido de bolinhas", "Macacão listrado", "Macacão de verão", "Macacão de passeio", "Vestido girassol", "Vestido cereja"],
-		"shoes": ["Tênis com cadarço", "Sandália leve", "Botas de passeio", "Botinhas", "Sapatos de festa", "Sapatilhas"]
-	}
-	for slot in ["top", "bottom", "dress", "shoes"]:
-		for index in range(shapes[slot].size()):
-			_all.append(_item(slot + "_%02d" % index, names[slot][index], slot,
-				shapes[slot][index], Color(colors[index]), motifs[index], tags[index]))
-	# Quatro opções de cabelo livres para os quatro modelos.
-	for index in range(4):
-		_all.append(_item("hair_%02d" % index, ["Coquinhos", "Soltinho", "Tranças", "Cacheado"][index],
-			"hair", ["coques", "solto", "trancas", "cacheado"][index],
-			Color(["734f42", "d28641", "332837", "9b5f32"][index]), "simples", tags[index]))
-	var accessories := [
-		["Óculos coração", "oculos", "festa"], ["Bolsa flor", "bolsa", "parque"],
-		["Chapéu de praia", "chapeu", "praia"], ["Colar de estrelas", "colar", "festa"],
-		["Laço de fita", "laco", "fantasia"], ["Bolsa arco-íris", "bolsa", "parque"],
-		["Óculos sol", "oculos", "praia"], ["Coroa", "coroa", "fantasia"],
-		["Cachecol", "cachecol", "inverno"], ["Tiara flor", "tiara", "parque"],
-		["Colar coração", "colar", "festa"], ["Gorrinho", "gorro", "inverno"]
-	]
-	for index in range(accessories.size()):
-		_all.append(_item("accessory_%02d" % index, accessories[index][0], "accessory",
-			accessories[index][1], Color(colors[index % colors.size()]), motifs[index % motifs.size()], accessories[index][2]))
-	# Peças extras Pro: itens básicos acima permanecem gratuitos.
-	for slot in ["top", "bottom", "dress", "shoes", "hair", "accessory"]:
-		for index in range(4):
-			var styles: Array = shapes.get(slot, ["coques", "solto", "trancas", "cacheado"] if slot == "hair" else ["coroa", "bolsa", "tiara", "cachecol"])
-			_all.append(_item("pro_%s_%02d" % [slot, index], "Coleção brilho %d" % (index + 1),
-				slot, styles[index % styles.size()], Color(colors[(index + 4) % colors.size()]),
-				motifs[(index + 2) % motifs.size()], tags[(index + 3) % tags.size()], true))
-	# Os 150 assets premium originais têm sprite próprio, IDs estáveis
-	# e podem ser usados nas dez bonecas kawaii (índices 4..13).
+	# 75 unique Free pieces; each doll has 5 tops, bottoms, dresses,
+	# shoes and accessories. No old licensed/paper sprites are referenced.
+	var free_colors := ["b4e5cb", "a9c9f3", "f5cf80"]
+	for spec in FreeCollection.ITEMS:
+		var slot: String = str(spec["slot"])
+		var id: String = str(spec["id"])
+		var model_index: int = int(spec["model"])
+		var style := "blusa" if slot == "top" else ("shorts" if slot == "bottom"
+			else ("rodado" if slot == "dress" else ("sapato" if slot == "shoes" else "tiara")))
+		var tag := "inverno" if str(spec["name"]).to_lower().contains("inverno") else (
+			"praia" if slot == "shoes" else ("festa" if slot == "dress" else "parque"))
+		var item := _item(id, str(spec["name"]), slot, style,
+			Color(free_colors[model_index]), "simples", tag)
+		item["sprite"] = str(spec["sprite"])
+		item["free_model_index"] = model_index
+		_all.append(item)
+
+	# The 160 original PRO images are unchanged (10 dolls and 150 wearables).
+	# Preserve their historic item IDs and model indexes 4..13.
 	var kawaii_colors := ["ff9cbc", "ac98dc", "8ecdc2", "f2c578", "8eb7e0"]
 	for spec in KawaiiCollection.ITEMS:
 		var slot: String = str(spec["slot"])
@@ -122,14 +101,20 @@ static func _populate() -> void:
 		_all.append(item)
 
 
+static func model_is_selectable(index: int) -> bool:
+	return MODEL_SELECTION.has(index)
+
+
 static func model_requires_pro(index: int) -> bool:
 	return index >= KAWAII_MODEL_INDEX
 
 
 static func item_matches_model(item: Dictionary, model_index: int) -> bool:
-	if model_index >= KAWAII_MODEL_INDEX:
+	if not model_is_selectable(model_index):
+		return false
+	if model_requires_pro(model_index):
 		return bool(item.get("kawaii", false))
-	return not bool(item.get("kawaii", false))
+	return item.has("free_model_index") and int(item["free_model_index"]) == model_index
 
 
 static func _item(id: String, title: String, slot: String, style: String, color: Color,
