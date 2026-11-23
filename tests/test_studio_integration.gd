@@ -32,6 +32,24 @@ func _run() -> void:
 	root.add_child(game)
 	await process_frame
 	_check(game.screen == "home", "inicia no menu")
+	game._pointer_down(0, Vector2(200, 160))
+	game._pointer_up(0, Vector2(200, game.size.y - 295))
+	_check(game.screen == "home", "arrastar de área vazia para COMEÇAR não navega")
+	game._pointer_down(0, Vector2(200, game.size.y - 295))
+	game._pointer_up(0, Vector2(200, game.size.y - 295))
+	_check(game.screen == "studio", "tap legítimo no mesmo botão abre o estúdio")
+	game._pointer_down(0, Vector2(game.size.x * 0.5, 240))
+	game._pointer_up(0, Vector2(game.size.x - 25, game.size.y - 30))
+	_check(game.screen == "studio" and not game._clear_armed, "arraste vazio para LIMPAR não arma confirmação")
+	game.screen = "finish"
+	game._pointer_down(0, Vector2(200, 300))
+	game._pointer_up(0, Vector2(200, game.size.y - 70))
+	_check(game.screen == "finish", "arrastar vazio para CRIAR OUTRO LOOK não apaga nem navega")
+	game.screen = "pro"
+	game._pointer_down(0, Vector2(200, 300))
+	game._pointer_up(0, Vector2(200, game.size.y - 145))
+	_check(game.screen == "pro", "arrastar vazio até RESTAURAR não solicita compra")
+	game.screen = "home"
 	game.toast = ""
 	game.billing._on_disconnected()
 	_check(game.toast.is_empty(), "billing disconnect does not toast on automatic refresh")
@@ -124,6 +142,12 @@ func _run() -> void:
 	game._pointer_down(0, Vector2(45, game.size.y - 200))
 	game._pointer_down(1, Vector2(165, game.size.y - 200))
 	_check(game.active_finger == 0, "segunda captura ignorada")
+	var second_cancel := InputEventScreenTouch.new()
+	second_cancel.index = 1
+	second_cancel.canceled = true
+	second_cancel.position = Vector2(165, game.size.y - 200)
+	game._gui_input(second_cancel)
+	_check(game.active_finger == 0 and not game.dragging_id.is_empty(), "cancelar dedo ignorado não encerra arraste do dedo capturado")
 	game._pointer_up(0, Vector2(300, 350))
 	_check(game.state.outfit["dress"] == "", "repetir toque na peça selecionada remove roupa")
 	game._handle_tap(Vector2(35, game.size.y - 30))

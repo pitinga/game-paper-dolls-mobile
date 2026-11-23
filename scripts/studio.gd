@@ -10,6 +10,7 @@ const AndroidGallery = preload("res://scripts/android_gallery.gd")
 const EXPORT_FOLDER := "user://criacoes"
 const ENTITLEMENT_FILE := "user://paper_dolls_pro.cfg"
 const WARDROBE_HEIGHT := 360.0
+const TAP_SLOP := 18.0
 # Never sell duplicated placeholder art. Enable only after unique licensed Pro assets ship.
 const PRO_SALES_ENABLED := false
 
@@ -21,6 +22,7 @@ var active_finger := -99
 var dragging_id := ""
 var drag_pos := Vector2.ZERO
 var drag_origin := Vector2.ZERO
+var _tap_start_target := ""
 var toast := ""
 var toast_elapsed := 0.0
 var exported_path := ""
@@ -401,7 +403,8 @@ func _gui_input(event: InputEvent) -> void:
 		if event.pressed:
 			_pointer_down(event.index, event.position)
 		elif event.canceled:
-			_cancel_pointer()
+			if event.index == active_finger:
+				_cancel_pointer()
 		else:
 			_pointer_up(event.index, event.position)
 		accept_event()
@@ -440,6 +443,7 @@ func _go_back() -> void:
 func _cancel_pointer() -> void:
 	active_finger = -99
 	dragging_id = ""
+	_tap_start_target = ""
 	queue_redraw()
 
 
@@ -450,6 +454,7 @@ func _pointer_down(finger: int, point: Vector2) -> void:
 	drag_origin = point
 	drag_pos = point
 	dragging_id = _card_at(point) if screen == "studio" else ""
+	_tap_start_target = _tap_target_at(point) if dragging_id.is_empty() else ""
 	queue_redraw()
 
 
@@ -465,14 +470,70 @@ func _pointer_up(finger: int, point: Vector2) -> void:
 	if active_finger != finger:
 		return
 	active_finger = -99
+	var initial_target := _tap_start_target
+	_tap_start_target = ""
 	if not dragging_id.is_empty():
 		var dragged := dragging_id
 		dragging_id = ""
 		if point.y < size.y - WARDROBE_HEIGHT or point.distance_to(drag_origin) < 22:
 			_wear(dragged)
-	else:
+	elif not initial_target.is_empty() and initial_target == _tap_target_at(point) \
+			and point.distance_to(drag_origin) <= TAP_SLOP:
 		_handle_tap(point)
 	queue_redraw()
+
+
+func _tap_target_at(point: Vector2) -> String:
+	# Um comando só vale para press/release no MESMO alvo; arraste vazio
+	# não pode iniciar compra, navegação, exportação nem apagar um look.
+	var y := point.y
+	var w := size.x
+	match screen:
+		"home":
+			if y >= size.y - 325 and y < size.y - 263: return "start"
+			if y >= size.y - 250 and y < size.y - 197: return "models"
+			if y >= size.y - 185 and y < size.y - 132: return "challenges"
+			if y >= size.y - 120 and y < size.y - 71: return "pro" if point.x < w * 0.5 else "games"
+		"studio":
+			if y >= 32 and y <= 80:
+				var headers := _studio_header_rects(w)
+				for i in range(headers.size()):
+					if headers[i].has_point(point): return "header_%d" % i
+			var top := size.y - WARDROBE_HEIGHT
+			if y >= size.y - 56:
+				var footer := floori((point.x - 6) / ((w - 20) / 4.0))
+				if footer >= 0 and footer < 4: return "footer_%d" % footer
+			elif y >= top + 250 and y < top + 305:
+				for i in range(5):
+					if point.distance_to(Vector2(w * 0.5 - 96 + i * 48, top + 276)) < 24: return "color_%d" % i
+			elif y >= top and y < top + 62:
+				var category_index := floori(point.x / (w / 6.0))
+				if category_index >= 0 and category_index < Catalog.CATEGORIES.size(): return "category_%d" % category_index
+			elif y >= top + 198 and y < top + 245:
+				if point.x < 95: return "page_prev"
+				if point.x > w - 95: return "page_next"
+		"models", "background":
+			if y < 85: return "back"
+			var start_y := 165.0 if screen == "models" else 158.0
+			var row_h := 270.0 if screen == "models" else 181.0
+			if y >= start_y:
+				return "item_%d" % (floori((y - start_y) / row_h) * 2 + (0 if point.x < w * 0.5 else 1))
+		"challenges":
+			if y < 85: return "back"
+			if y >= size.y - 96: return "challenge_start"
+			if y >= 165: return "challenge_%d" % floori((y - 165) / 113)
+		"finish":
+			if y < 85: return "back"
+			if y >= size.y - 168 and y < size.y - 115: return "share"
+			if y >= size.y - 235 and y < size.y - 179: return "save"
+			if y >= size.y - 105: return "new_look"
+		"pro":
+			if y < 85: return "back"
+			if y >= size.y - 249 and y < size.y - 187: return "purchase"
+			if y >= size.y - 173 and y < size.y - 117: return "restore"
+		"games":
+			if y < 85: return "back"
+	return ""
 
 
 func _card_at(point: Vector2) -> String:
