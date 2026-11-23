@@ -38,6 +38,12 @@ jobs:
         run: godot --headless --path . --script res://tests/test_catalog_and_rules.gd
       - name: Testes de toque e exportação
         run: godot --headless --path . --script res://tests/test_studio_integration.gd
+      - name: Instalar display virtual para exportação real
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq xvfb xauth libgl1-mesa-dri
+      - name: Teste de PNG real com renderer gráfico (falha obrigatória se indisponível)
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+        run: xvfb-run -a godot --path . --script res://tests/test_graphical_export.gd
       - name: Testes de layout mobile e recortes
         run: godot --headless --path . --script res://tests/test_mobile_layout.gd
       - name: Invariantes de transparência e encaixe visual
