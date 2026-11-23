@@ -221,7 +221,8 @@ func _draw_wardrobe(bounds: Vector2) -> void:
 		if locked:
 			_draw_pill(Rect2(card.position.x + 50, card.position.y + 8, card.size.x - 55, 24), Color("76537c"))
 			_label("PRO", Vector2(card.end.x - 32, card.position.y + 26), 12, Color.WHITE)
-		_label(str(item["name"]), Vector2(card.get_center().x, card.end.y - 8), 12, Color("624b60"))
+		var displayed_name := _fit_card_name(str(item["name"]), card.size.x - 8.0)
+		_label(displayed_name, Vector2(card.get_center().x, card.end.y - 8), 12, Color("624b60"), card.size.x - 8.0)
 	var total_pages := maxi(1, ceili(float(items.size()) / 4.0))
 	_button(Rect2(12, top + 198, 74, 48), "‹")
 	_label("%s  %d/%d" % [Catalog.CATEGORY_NAMES[category], page + 1, total_pages],
@@ -314,7 +315,7 @@ func _draw_challenges(bounds: Vector2) -> void:
 		var completed: bool = state.completed_challenges.has(i)
 		_draw_pill(rect, Color("e5f6eb") if completed else Color("ffecf4"))
 		_label(("★ " if completed else "✦ ") + str(challenge["name"]), Vector2(bounds.x * 0.5, rect.position.y + 37), 22, Color("67435c"))
-		_label(str(challenge["hint"]), Vector2(bounds.x * 0.5, rect.position.y + 67), 15, Color("9c6a80"))
+		_label(str(challenge["hint"]), Vector2(bounds.x * 0.5, rect.position.y + 67), 15, Color("7a5068"))
 	_action(Rect2(36, bounds.y - 96, bounds.x - 72, 54), "JOGAR LIVRE", false)
 
 
@@ -336,10 +337,11 @@ func _available_items(slot: String) -> Array[Dictionary]:
 
 func _draw_pro(bounds: Vector2) -> void:
 	if not PRO_SALES_ENABLED and not state.owned_pro:
-		_draw_page_title(bounds, "Minhas compras", "10 bonecas e 150 peças exclusivas")
-		_label("PRO: 10 bonecas e 150 peças!", Vector2(bounds.x * 0.5, 335), 29, Color("6f4367"))
-		_label("Já comprou? Toque em Restaurar.", Vector2(bounds.x * 0.5, 412), 19, Color("795777"))
-		_action(Rect2(32, bounds.y - 173, bounds.x - 64, 56), "RESTAURAR COMPRA", false)
+		_draw_page_title(bounds, "Coleção PRO", "Conteúdo exclusivo em preparação")
+		_label("10 bonecas e 150 peças em preparação", Vector2(bounds.x * 0.5, 335), 23, Color("6f4367"))
+		_label("Compra PRO indisponível por enquanto.", Vector2(bounds.x * 0.5, 412), 18, Color("7a5068"))
+		if billing_available:
+			_action(Rect2(32, bounds.y - 173, bounds.x - 64, 56), "RESTAURAR COMPRA", false)
 		return
 	_draw_page_title(bounds, "Coleção PRO ✦", "Uma compra dentro do mesmo aplicativo")
 	_label("Mais cores, roupas, acessórios", Vector2(bounds.x * 0.5, 250), 26, Color("6f4367"))
@@ -349,7 +351,7 @@ func _draw_pro(bounds: Vector2) -> void:
 		Sprites.draw_item_thumbnail(self, Catalog.filtered_for_model("dress", true, Catalog.KAWAII_MODEL_INDEX)[i], Vector2(x, 410), Vector2(82, 98))
 	_label("Grátis: 3 bonecas originais e 75 peças", Vector2(bounds.x * 0.5, 535), 18, Color("795777"))
 	_label("PRO: coleção de 160 imagens (compra suspensa)" if not PRO_SALES_ENABLED else "PRO: peças exclusivas e sem anúncios", Vector2(bounds.x * 0.5, 572), 18, Color("795777"))
-	_label("Compras restauráveis na Play Store", Vector2(bounds.x * 0.5, 608), 16, Color("98768b"))
+	_label("Compras restauráveis na Play Store", Vector2(bounds.x * 0.5, 608), 16, Color("7a5068"))
 	if state.owned_pro:
 		_label("✓ PRO ATIVO", Vector2(bounds.x * 0.5, bounds.y - 245), 27, Color("46886c"))
 	else:
@@ -366,14 +368,14 @@ func _draw_games(bounds: Vector2) -> void:
 		var rect := Rect2(30, 180 + i * 165, bounds.x - 60, 136)
 		_draw_pill(rect, Color("eeeeee") if i == 2 else Color("ffe8f1"))
 		_label(titles[i], Vector2(bounds.x * 0.5, rect.position.y + 57), 26, Color("999999") if i == 2 else Color("68445f"))
-		_label(hints[i], Vector2(bounds.x * 0.5, rect.position.y + 93), 17, Color("999999") if i == 2 else Color("916c85"))
+		_label(hints[i], Vector2(bounds.x * 0.5, rect.position.y + 93), 17, Color("999999") if i == 2 else Color("7a5068"))
 
 
 func _draw_page_title(bounds: Vector2, title: String, subtitle: String) -> void:
 	_draw_pill(Rect2(0, 0, bounds.x, 134), Color("fffafc"))
 	_button(Rect2(12, 28, 98, 49), "‹ VOLTAR")
 	_label(title, Vector2(bounds.x * 0.5, 101), 29, Color("644360"))
-	_label(subtitle, Vector2(bounds.x * 0.5, 135), 16, Color("9a6e85"))
+	_label(subtitle, Vector2(bounds.x * 0.5, 135), 16, Color("7a5068"))
 
 
 func _button(rect: Rect2, name: String) -> void:
@@ -404,6 +406,17 @@ func _draw_pill(rect: Rect2, color: Color) -> void:
 	for pos in [rect.position + Vector2(radius, radius), rect.position + Vector2(rect.size.x - radius, radius),
 			rect.position + Vector2(radius, rect.size.y - radius), rect.end - Vector2(radius, radius)]:
 		draw_circle(pos, radius, color)
+
+
+func _fit_card_name(content: String, max_width: float) -> String:
+	# Nunca permitir que nomes longos invadam o cartao adjacente.
+	var font: Font = ThemeDB.fallback_font
+	if font.get_string_size(content, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x <= max_width:
+		return content
+	var shortened := content
+	while shortened.length() > 0 and font.get_string_size(shortened + "…", HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x > max_width:
+		shortened = shortened.substr(0, shortened.length() - 1)
+	return shortened + "…"
 
 
 func _label(content: String, pos: Vector2, font_size: int, color: Color, max_width: float = 0.0) -> void:
@@ -670,7 +683,7 @@ func _handle_tap(point: Vector2) -> void:
 				screen = "home"
 			elif y >= size.y - 249 and y < size.y - 187 and not state.owned_pro and not billing_busy and PRO_SALES_ENABLED:
 				billing.purchase()
-			elif y >= size.y - 173 and y < size.y - 117 and not state.owned_pro and not billing_busy:
+			elif y >= size.y - 173 and y < size.y - 117 and not state.owned_pro and not billing_busy and billing_available:
 				billing.restore()
 		"games":
 			if y < 85:
