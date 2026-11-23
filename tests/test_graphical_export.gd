@@ -52,8 +52,8 @@ func _run() -> void:
 	_check(first_image.get_size() == Vector2i(540, 640), "composição tem 540x640")
 	if not first_image.is_empty():
 		_check(first_image.get_pixel(270, 190) != first_image.get_pixel(15, 15), "boneca não é uma imagem vazia")
-	var first_hash: int = hash(first_image.get_data()) if not first_image.is_empty() else 0
-	game.state.wear("top_01")
+	var first_corner := first_image.get_pixel(15, 15) if not first_image.is_empty() else Color.BLACK
+	_check(game.state.wear("top_01") and game.state.select_background(1), "troca de roupa e cenário aplicada ao estado")
 	game._portrait.queue_redraw()
 	await process_frame
 	await process_frame
@@ -66,8 +66,10 @@ func _run() -> void:
 		_check(second_image.load(second_path) == OK, "segundo PNG é legível")
 	_check(second_image.get_size() == Vector2i(540, 640), "segunda exportação mantém 540x640")
 	if not second_image.is_empty():
-		_check(first_hash != 0 and hash(second_image.get_data()) != first_hash,
-			"trocar roupa altera pixels exportados sem incluir UI")
+		_check(second_image.get_pixel(15, 15) != first_corner,
+			"mudar cenário altera os pixels da composição exportada")
+		_check(not first_image.is_empty() and second_image.get_data() != first_image.get_data(),
+			"trocar roupa e cenário gera imagem diferente, sem UI")
 	game.queue_free()
 	await process_frame
 	for file in [first_path, second_path, base + ".cfg", base + "_pro.cfg"]:
