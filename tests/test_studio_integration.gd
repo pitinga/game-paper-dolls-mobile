@@ -8,8 +8,9 @@ class PurchaseSpy extends Node:
 	var purchase_calls := 0
 	func purchase() -> void:
 		purchase_calls += 1
+	var restore_calls := 0
 	func restore() -> void:
-		pass
+		restore_calls += 1
 
 
 func _initialize() -> void:
@@ -84,6 +85,8 @@ func _run() -> void:
 	game.billing = spy
 	game._handle_tap(Vector2(game.size.x * 0.5, game.size.y - 215))
 	_check(spy.purchase_calls == 0, "botão PRO desativado não chama compra")
+	game._handle_tap(Vector2(game.size.x * 0.5, game.size.y - 145))
+	_check(spy.restore_calls == 0, "não restaurar sem conexão ativa com a Play Store")
 	game.billing = orig_billing
 	game.screen = "studio"
 	game._pro_test_build = true

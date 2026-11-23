@@ -21,6 +21,11 @@ func _run() -> void:
 		var flags: String = str(presets.get_value(section, "custom_features", ""))
 		_check(not flags.contains("paper_dolls_pro_test"), "Pro teste NÃO deve entrar no preset oficial " + section)
 		_check(str(presets.get_value(section + ".options", "package/unique_name", "")) == "com.pitinga.paperdolls", "Identidade do aplicativo principal")
+	# O arquivo exportado nunca deve empacotar sprites legados de terceiros.
+	for index in range(3):
+		var excludes: String = str(presets.get_value("preset.%d" % index, "exclude_filter", ""))
+		_check(excludes.contains("assets/paper/*") and excludes.contains("assets/paper/**/*"),
+			"Preset %d exclui pasta assets/paper, inclusive subpastas" % index)
 	var debug_flags: String = str(presets.get_value("preset.2", "custom_features", ""))
 	_check(debug_flags.contains("paper_dolls_pro_test"), "Preset de teste tem flag exclusiva")
 	_check(str(presets.get_value("preset.2.options", "package/unique_name", "")) == "com.pitinga.paperdolls.protest", "Pacote de teste separado")
