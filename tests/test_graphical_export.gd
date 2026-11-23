@@ -70,9 +70,26 @@ func _run() -> void:
 			"mudar cenário altera os pixels da composição exportada")
 		_check(not first_image.is_empty() and second_image.get_data() != first_image.get_data(),
 			"trocar roupa e cenário gera imagem diferente, sem UI")
+	# Novo conteúdo original: renderizar o modelo Luna com uma roupa cujo PNG
+	# ocupa o MESMO sistema de coordenadas do modelo, sem recorte intermediário.
+	game.state.owned_pro = true
+	_check(game.state.select_model(4) and game.state.wear("pro_kawaii_dress_00") and
+		game.state.wear("pro_kawaii_shoes_00"), "Luna e peças kawaii vestíveis")
+	game._portrait.queue_redraw()
+	await process_frame
+	await process_frame
+	game.export_png()
+	await _wait_export(game)
+	var kawaii_path: String = game.exported_path
+	var kawaii_image := Image.new()
+	if not kawaii_path.is_empty():
+		_check(kawaii_image.load(kawaii_path) == OK, "PNG kawaii exportado legível")
+	_check(kawaii_image.get_size() == Vector2i(540, 640), "exportação kawaii com proporção correta")
+	if not kawaii_image.is_empty():
+		_check(kawaii_image.get_data() != second_image.get_data(), "roupas kawaii visíveis em resultado próprio")
 	game.queue_free()
 	await process_frame
-	for file in [first_path, second_path, base + ".cfg", base + "_pro.cfg"]:
+	for file in [first_path, second_path, kawaii_path, base + ".cfg", base + "_pro.cfg"]:
 		if not file.is_empty() and FileAccess.file_exists(file):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(file))
 	print("Exportação gráfica: %d falha(s)." % failures)

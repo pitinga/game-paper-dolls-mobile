@@ -242,15 +242,16 @@ func _draw_wardrobe(bounds: Vector2) -> void:
 
 
 func _draw_models(bounds: Vector2) -> void:
-	_draw_page_title(bounds, "Escolha seu modelo", "Os quatro usam as mesmas roupas")
-	for index in range(4):
+	_draw_page_title(bounds, "Escolha seu modelo", "Coleção kawaii original ✦ PRO")
+	for index in range(Catalog.MODEL_NAMES.size()):
 		var col := index % 2
 		var row := index / 2
 		var width := (bounds.x - 48) * 0.5
-		var rect := Rect2(16 + col * (width + 16), 165 + row * 270, width, 253)
+		var rect := Rect2(16 + col * (width + 16), 165 + row * 215, width, 201)
 		_draw_pill(rect, Color("ffecf4") if index == state.model_index else Color.WHITE)
-		Sprites.draw_model_preview(self, index, Rect2(rect.position + Vector2(9, 9), Vector2(width - 18, 213)))
-		_label(Catalog.MODEL_NAMES[index] + (" ✓" if index == state.model_index else ""),
+		Sprites.draw_model_preview(self, index, Rect2(rect.position + Vector2(9, 9), Vector2(width - 18, 159)))
+		var locked: bool = Catalog.model_requires_pro(index) and not state.owned_pro
+		_label(Catalog.MODEL_NAMES[index] + (" 🔒" if locked else "") + (" ✓" if index == state.model_index else ""),
 			Vector2(rect.get_center().x, rect.end.y - 14), 20, Color("64445f"))
 
 
@@ -303,7 +304,7 @@ func _draw_finish(bounds: Vector2) -> void:
 
 
 func _available_items(slot: String) -> Array[Dictionary]:
-	return Catalog.filtered(slot, state.owned_pro or PRO_SALES_ENABLED)
+	return Catalog.filtered_for_model(slot, state.owned_pro or PRO_SALES_ENABLED, state.model_index)
 
 
 func _draw_pro(bounds: Vector2) -> void:
@@ -515,7 +516,7 @@ func _tap_target_at(point: Vector2) -> String:
 		"models", "background":
 			if y < 85: return "back"
 			var start_y := 165.0 if screen == "models" else 158.0
-			var row_h := 270.0 if screen == "models" else 181.0
+			var row_h := 215.0 if screen == "models" else 181.0
 			if y >= start_y:
 				return "item_%d" % (floori((y - start_y) / row_h) * 2 + (0 if point.x < w * 0.5 else 1))
 		"challenges":
@@ -579,12 +580,16 @@ func _handle_tap(point: Vector2) -> void:
 				screen = "home"
 			elif y >= 165:
 				var col := 0 if point.x < w * 0.5 else 1
-				var row := floori((y - 165) / 270)
+				var row := floori((y - 165) / 215)
 				var index := row * 2 + col
 				if index >= 0 and index < Catalog.MODEL_NAMES.size():
 					if state.select_model(index):
 						state.save()
-					screen = "studio"
+						screen = "studio"
+					elif Catalog.model_requires_pro(index) and not state.owned_pro:
+						screen = "pro"
+					else:
+						screen = "studio"
 		"background":
 			if y < 85:
 				screen = "studio"

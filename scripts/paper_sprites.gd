@@ -13,19 +13,22 @@ const DRESS_RECT := Rect2(180, 347, 180, 204)
 const FOOT_BASELINE := 584.0
 
 static var _cache: Dictionary = {}
+static var _kawaii_bounds: Dictionary = {}
 # Cache missing resources too: draw loops must not recheck disk every frame.
 
 
 static func _texture(name: String) -> Texture2D:
 	if _cache.has(name):
 		return _cache[name]
-	var path := FOLDER + name + ".png"
+	var path := ("res://assets/kawaii/" + name.trim_prefix("kawaii/") + ".png") if name.begins_with("kawaii/") else (FOLDER + name + ".png")
 	var result: Texture2D = load(path) if ResourceLoader.exists(path) else null
 	_cache[name] = result
 	return result
 
 
 static func _sprite_name(item: Dictionary) -> String:
+	if item.has("sprite"):
+		return str(item["sprite"])
 	var id := str(item.get("id", ""))
 	if id.begins_with("pro_"):
 		var parts := id.split("_")
@@ -61,6 +64,9 @@ static func _fit_top(canvas: CanvasItem, name: String, rect: Rect2, color: Color
 
 
 static func draw_stage(canvas: CanvasItem, state: Object) -> void:
+	if int(state.model_index) == Catalog.KAWAII_MODEL_INDEX:
+		_draw_kawaii_stage(canvas, state)
+		return
 	var name := "model_%d" % clampi(int(state.model_index), 0, 3)
 	var outfit: Dictionary = state.outfit
 	var shoes := Catalog.by_id(str(outfit.get("shoes", "")))
@@ -86,6 +92,25 @@ static func draw_stage(canvas: CanvasItem, state: Object) -> void:
 		draw_item_on_doll(canvas, accessory, color_variant)
 	if not hair.is_empty():
 		_draw_hair_front(canvas, hair, int(state.model_index))
+
+
+static func _draw_kawaii_stage(canvas: CanvasItem, state: Object) -> void:
+	# Personagem e vestuário usam o MESMO canvas fonte de 1024x1536.
+	# Escalá-los pela mesma matriz mantém os pixels exatamente alinhados.
+	_fit_centered(canvas, "kawaii/model_4", DOLL_RECT)
+	var outfit: Dictionary = state.outfit
+	var dress := Catalog.by_id(str(outfit.get("dress", "")))
+	if not dress.is_empty():
+		draw_item_on_doll(canvas, dress, int(state.color_variant))
+	else:
+		for slot in ["top", "bottom"]:
+			var piece := Catalog.by_id(str(outfit.get(slot, "")))
+			if not piece.is_empty():
+				draw_item_on_doll(canvas, piece, int(state.color_variant))
+	for slot in ["shoes", "accessory", "hair"]:
+		var piece := Catalog.by_id(str(outfit.get(slot, "")))
+		if not piece.is_empty():
+			draw_item_on_doll(canvas, piece, int(state.color_variant))
 
 
 static func _draw_hair_back(canvas: CanvasItem, item: Dictionary, model_index: int) -> void:
@@ -144,6 +169,9 @@ static func _shoe_rect_for_style(style: String) -> Rect2:
 static func draw_item_on_doll(canvas: CanvasItem, item: Dictionary, variant: int = 0) -> void:
 	var slot := str(item["slot"])
 	var name := _sprite_name(item)
+	if name.begins_with("kawaii/"):
+		_fit_centered(canvas, name, DOLL_RECT)
+		return
 	var tint := _tint(variant)
 	match slot:
 		"top": _fit_top(canvas, name, TOP_RECT, tint)
@@ -181,10 +209,41 @@ static func draw_item_on_doll(canvas: CanvasItem, item: Dictionary, variant: int
 
 static func draw_item_thumbnail(canvas: CanvasItem, item: Dictionary, center: Vector2, size: Vector2) -> void:
 	var name := _sprite_name(item)
+	if name.begins_with("kawaii/"):
+		_draw_kawaii_thumbnail(canvas, name, center, size)
+		return
 	if not _fit_centered(canvas, name, Rect2(center - size * 0.5, size)):
 		# Cabelos e acessórios sem recorte continuam identificáveis no catálogo.
 		Art.draw_item(canvas, item, center, 0.56)
 
 
 static func draw_model_preview(canvas: CanvasItem, model_index: int, rect: Rect2) -> void:
-	_fit_centered(canvas, "model_%d" % model_index, rect)
+	_fit_centered(canvas, "kawaii/model_4" if model_index == Catalog.KAWAII_MODEL_INDEX else "model_%d" % model_index, rect)
+
+
+static func _draw_kawaii_thumbnail(canvas: CanvasItem, name: String, center: Vector2, size: Vector2) -> void:
+	var texture := _texture(name)
+	if texture == null:
+		return
+	# Usar somente os pixels visíveis para não reduzir o vestido à altura de
+	# um selo minúsculo por causa das margens transparentes do canvas de pose.
+	var used: Rect2i = _kawaii_bounds.get(name, Rect2i())
+	if used.size == Vector2i.ZERO:
+		var source: Image = texture.get_image()
+		var lo := Vector2i(source.get_width(), source.get_height())
+		var hi := Vector2i.ZERO
+		for y in range(0, source.get_height(), 8):
+			for x in range(0, source.get_width(), 8):
+				if source.get_pixel(x, y).a >= 0.7:
+					lo.x = mini(lo.x, x)
+					lo.y = mini(lo.y, y)
+					hi.x = maxi(hi.x, x)
+					hi.y = maxi(hi.y, y)
+		used = Rect2i(lo - Vector2i(12, 12), hi - lo + Vector2i(32, 32)).intersection(
+			Rect2i(Vector2i.ZERO, source.get_size()))
+		_kawaii_bounds[name] = used
+	if used.size.x <= 0 or used.size.y <= 0:
+		return
+	var factor := minf(size.x / used.size.x, size.y / used.size.y)
+	var target := Vector2(used.size) * factor
+	canvas.draw_texture_rect_region(texture, Rect2(center - target * 0.5, target), Rect2(used))
