@@ -1,13 +1,16 @@
 extends RefCounted
 ## Identificadores estáveis: looks antigos continuam legíveis após atualizações.
 
+const KawaiiCollection = preload("res://scripts/kawaii_collection.gd")
+
 const SLOTS := ["hair", "top", "bottom", "dress", "shoes", "accessory"]
 const CATEGORIES := ["top", "bottom", "dress", "shoes", "hair", "accessory"]
 const CATEGORY_NAMES := {
 	"top": "Blusas", "bottom": "Shorts e saias", "dress": "Vestidos",
 	"shoes": "Sapatos", "hair": "Cabelos", "accessory": "Acessórios"
 }
-const MODEL_NAMES := ["Lia", "Bia", "Nina", "Duda", "Luna ✦"]
+const MODEL_NAMES := ["Lia", "Bia", "Nina", "Duda", "Luna", "Yumi", "Maya", "Clara",
+	"Jade", "Sol", "Amira", "Sofia", "Isis", "Tainá"]
 const KAWAII_MODEL_INDEX := 4
 const MODEL_SKIN := [
 	Color("f5b68f"), Color("c98060"), Color("8f533f"), Color("e5a47c")
@@ -85,20 +88,37 @@ static func _populate() -> void:
 			_all.append(_item("pro_%s_%02d" % [slot, index], "Coleção brilho %d" % (index + 1),
 				slot, styles[index % styles.size()], Color(colors[(index + 4) % colors.size()]),
 				motifs[(index + 2) % motifs.size()], tags[(index + 3) % tags.size()], true))
-	# Coleção kawaii totalmente original: PNGs com mesmo canvas e transparência.
-	# Ao contrário da coleção legado, estas quatro peças são exclusivas de fato.
-	var kawaii_pieces := [
-		["top", "Blusa marinheira", "blusa", "parque", "65bfe0"],
-		["bottom", "Short de margaridas", "shorts", "parque", "a68ade"],
-		["dress", "Vestido de morangos", "rodado", "festa", "ff7498"],
-		["shoes", "Sapatilhas de laço", "sapato", "festa", "62be9a"]
-	]
-	for piece in kawaii_pieces:
-		var id := "pro_kawaii_%s_00" % str(piece[0])
-		var item := _item(id, str(piece[1]), str(piece[0]), str(piece[2]),
-			Color(str(piece[4])), "simples", str(piece[3]), true)
+	# Os 150 assets premium originais têm sprite próprio, IDs estáveis
+	# e podem ser usados nas dez bonecas kawaii (índices 4..13).
+	var kawaii_colors := ["ff9cbc", "ac98dc", "8ecdc2", "f2c578", "8eb7e0"]
+	for spec in KawaiiCollection.ITEMS:
+		var slot: String = str(spec["slot"])
+		var id: String = str(spec["id"])
+		var anchor: String = str(spec["anchor"])
+		var style := "laco"
+		match slot:
+			"top": style = "blusa"
+			"bottom": style = "shorts"
+			"dress": style = "rodado"
+			"shoes": style = "sapato"
+			"accessory":
+				style = {"bag": "bolsa", "eyes": "oculos", "hat": "chapeu",
+					"crown": "coroa", "neck": "colar", "wrist": "pulseira",
+					"head": "tiara"}.get(anchor, "laco")
+		var index := int(id.get_slice("_", id.get_slice_count("_") - 1))
+		var tag := "festa"
+		if slot == "bottom" or slot == "top":
+			tag = "parque"
+		if anchor == "feet" or anchor == "bag":
+			tag = "praia"
+		if "cachecol" in str(spec["name"]).to_lower() or "gorro" in str(spec["name"]).to_lower():
+			tag = "inverno"
+		var item := _item(id, str(spec["name"]), slot, style,
+			Color(kawaii_colors[index % kawaii_colors.size()]), "simples", tag, true)
 		item["sprite"] = "kawaii/" + id
 		item["model_index"] = KAWAII_MODEL_INDEX
+		item["kawaii"] = true
+		item["anchor"] = anchor
 		_all.append(item)
 
 
@@ -107,9 +127,9 @@ static func model_requires_pro(index: int) -> bool:
 
 
 static func item_matches_model(item: Dictionary, model_index: int) -> bool:
-	if model_index == KAWAII_MODEL_INDEX:
-		return int(item.get("model_index", -1)) == model_index
-	return not item.has("model_index")
+	if model_index >= KAWAII_MODEL_INDEX:
+		return bool(item.get("kawaii", false))
+	return not bool(item.get("kawaii", false))
 
 
 static func _item(id: String, title: String, slot: String, style: String, color: Color,

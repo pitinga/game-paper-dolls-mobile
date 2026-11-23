@@ -4,8 +4,8 @@ Jogo de vestir bonecas, em português, feito em **Godot 4.7.2** para Android. O 
 
 ## O que já está implementado
 
-- Escolha de **4 personagens grátis** e **1 boneca original kawaii PRO (Luna)**, em pose própria.
-- Guarda-roupa grátis com **30 roupas**, **12 acessórios** e **4 penteados**. Coleção extra legada de 24 peças Pro e **4 novas roupas/calçados kawaii originais**, ainda em expansão.
+- Escolha de **4 personagens grátis** e **10 bonecas originais kawaii PRO** (Luna, Yumi, Maya, Clara, Jade, Sol, Amira, Sofia, Isis e Tainá), em poses ilustradas.
+- Guarda-roupa grátis com **30 roupas**, **12 acessórios** e **4 penteados**. O pacote kawaii PRO contém **100 roupas/calçados** (25 blusas, 25 partes inferiores, 25 vestidos e 25 sapatos) e **50 acessórios**. A coleção antiga de 24 peças Pro é mantida por compatibilidade.
 - Arrastar com dedo ou tocar na miniatura para vestir; peças se encaixam por categoria. Vestido substitui blusa + parte de baixo.
 - Trocar peça, retirar categoria, variar cores, desfazer e limpar o look.
 - **8 cenários**, sendo 5 grátis e 3 Pro; **5 desafios temáticos** sem cronômetro, com progresso de 0 a 2.
@@ -26,6 +26,7 @@ godot --path .
 godot --headless --path . --editor --import --quit
 godot --headless --path . --script res://tests/test_catalog_and_rules.gd
 godot --headless --path . --script res://tests/test_kawaii_assets.gd
+godot --headless --path . --script res://tests/test_kawaii_navigation.gd
 godot --headless --path . --script res://tests/test_studio_integration.gd
 godot --headless --path . --script res://tests/test_mobile_layout.gd
 godot --headless --path . --script res://tests/test_visual_regressions.gd
@@ -43,6 +44,10 @@ godot --headless --path . --export-debug "Android Pro Test" build/paper-dolls-pr
 ```
 
 Este preset usa a exportação Android direta do Godot (sem Gradle/Google Play Billing), pois testa conteúdo e interface, **não** o fluxo de pagamento. O pacote de teste não substitui o jogo instalado pela Play Store. O APK permanece ignorado pelo Git.
+
+Os **160 sprites PNG RGBA (1024×1536)** são incluídos no pacote Godot, usando IDs estáveis e o mesmo sistema de coordenadas. O seletor das 14 bonecas possui paginação para celulares, e as texturas grandes do pacote kawaii usam cache LRU limitado a 12 entradas para reduzir o consumo de memória.
+
+**A cobrança PRO permanece suspensa** na versão comercial, mesmo após a integração: é necessária avaliação visual em aparelhos Android (encaixe fino e consistência dos 39 acessórios vetoriais), verificação de licenciamento e teste real da Play Store antes de habilitar pagamentos. A versão Pro Test continua disponível somente no preset de debug.
 
 O build Pro de teste é **offline** e não solicita permissão `INTERNET`. A versão 0.1.0-pro-test.5 recupera as faixas brancas de macacões, remove fragmentos de outros sapatos, ajusta a base dos pés, diferencia os estados de salvamento e aumenta os alvos de toque. Um alerta do Play Protect foi registrado na instalação anterior: privilégios mínimos não garantem aprovação pelo Play Protect; se classificado como nocivo, o alerta precisa ser investigado junto ao Google antes de recomendar a instalação.
 

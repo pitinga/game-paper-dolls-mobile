@@ -87,9 +87,26 @@ func _run() -> void:
 	_check(kawaii_image.get_size() == Vector2i(540, 640), "exportação kawaii com proporção correta")
 	if not kawaii_image.is_empty():
 		_check(kawaii_image.get_data() != second_image.get_data(), "roupas kawaii visíveis em resultado próprio")
+	# Valida o último modelo, o último vestido e o último acessório no render real.
+	_check(game.state.select_model(13), "Tainá selecionável")
+	_check(game.state.wear("pro_kawaii_dress_24"), "vestido 24 equipado")
+	_check(game.state.wear("pro_kawaii_accessory_49"), "acessório 49 equipado")
+	game._portrait.queue_redraw()
+	await process_frame
+	await process_frame
+	game.export_png()
+	await _wait_export(game)
+	var final_path: String = game.exported_path
+	var final_image := Image.new()
+	if not final_path.is_empty():
+		_check(final_image.load(final_path) == OK, "PNG final PRO legível")
+	_check(final_image.get_size() == Vector2i(540, 640), "último modelo mantém tamanho da composição")
+	if not final_image.is_empty() and not kawaii_image.is_empty():
+		_check(final_image.get_data() != kawaii_image.get_data(),
+			"trocar para Tainá e vestir peças finais gera outro resultado gráfico")
 	game.queue_free()
 	await process_frame
-	for file in [first_path, second_path, kawaii_path, base + ".cfg", base + "_pro.cfg"]:
+	for file in [first_path, second_path, kawaii_path, final_path, base + ".cfg", base + "_pro.cfg"]:
 		if not file.is_empty() and FileAccess.file_exists(file):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(file))
 	print("Exportação gráfica: %d falha(s)." % failures)

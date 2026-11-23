@@ -18,7 +18,7 @@ func _check(ok: bool, label: String) -> void:
 
 func _run() -> void:
 	var scratch := "user://test_paper_%d.cfg" % Time.get_ticks_usec()
-	_check(Catalog.MODEL_NAMES.size() == 5, "quatro modelos grátis e primeiro modelo kawaii Pro")
+	_check(Catalog.MODEL_NAMES.size() == 14, "quatro modelos grátis e dez modelos kawaii Pro")
 	_check(Catalog.count("accessory", true) == 12, "12 acessórios grátis")
 	_check(Catalog.count("hair", true) == 4, "quatro penteados grátis")
 	var clothing := 0
@@ -26,6 +26,16 @@ func _run() -> void:
 		clothing += Catalog.count(slot, true)
 	_check(clothing == 30, "30 peças de roupas grátis")
 	_check(Catalog.count("", false) >= 70, "coleções Pro adicionais")
+	for slot in ["top", "bottom", "dress", "shoes"]:
+		_check(Catalog.filtered_for_model(slot, true, 4).size() == 25,
+			"25 peças Kawaii por categoria: " + slot)
+	_check(Catalog.filtered_for_model("accessory", true, 13).size() == 50,
+		"50 acessórios disponíveis em todas as bonecas Kawaii")
+	for index in range(4, 14):
+		_check(Catalog.model_requires_pro(index), "boneca premium bloqueada: " + str(index))
+		_check(Catalog.filtered_for_model("dress", true, index).size() == 25,
+			"coleção compartilhada com boneca Kawaii " + str(index))
+
 	var ids := {}
 	for item in Catalog.all_items():
 		_check(not ids.has(item["id"]), "item sem ID duplicado " + item["id"])
@@ -79,6 +89,13 @@ func _run() -> void:
 	_check(pro_state.select_model(Catalog.KAWAII_MODEL_INDEX), "modelo kawaii liberado com direito verificado")
 	_check(pro_state.wear("pro_kawaii_dress_00"), "vestido kawaii independente")
 	_check(pro_state.wear("pro_kawaii_shoes_00"), "sapatos kawaii independentes")
+	_check(pro_state.wear("pro_kawaii_accessory_49"), "último acessório Kawaii disponível")
+	_check(pro_state.outfit["accessory"] == "pro_kawaii_accessory_49", "acessório final equipado")
+	_check(pro_state.select_model(13), "troca para última boneca Kawaii")
+	_check(pro_state.outfit["dress"] == "pro_kawaii_dress_00" and
+		pro_state.outfit["accessory"] == "pro_kawaii_accessory_49",
+		"look Kawaii preservado na troca entre bonecas premium")
+	_check(pro_state.select_model(4), "troca de volta para Luna")
 	var kawaii_save := "user://kawaii_model_%d.cfg" % Time.get_ticks_usec()
 	pro_state.storage_path = kawaii_save
 	_check(pro_state.save() == OK, "persistência da coleção kawaii")
@@ -94,7 +111,7 @@ func _run() -> void:
 	_check(restored.model_index == Catalog.KAWAII_MODEL_INDEX and
 		restored.outfit["dress"] == "pro_kawaii_dress_00", "compra existente restaura look kawaii")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(kawaii_save))
-	_check(Catalog.filtered_for_model("dress", true, 4).size() == 1 and
+	_check(Catalog.filtered_for_model("dress", true, 4).size() == 25 and
 		Catalog.filtered_for_model("dress", true, 0).size() > 1,
 		"catálogos exclusivos evitam recortes incompatíveis")
 	_check(pro_state.select_model(0), "voltar a modelo grátis")

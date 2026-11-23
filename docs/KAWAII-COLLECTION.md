@@ -1,39 +1,40 @@
-# Veste & Cria — coleção kawaii moderna (primeiro conjunto)
+# Veste & Cria — catálogo Kawaii PRO (integração Godot)
 
-## Entrega atual
+## Conteúdo integrado
 
-- Modelo original `Luna ✦` (`assets/kawaii/model_4.png`), desbloqueado apenas com direito PRO.
-- Quatro overlays originais: `pro_kawaii_top_00`, `pro_kawaii_bottom_00`,
-  `pro_kawaii_dress_00`, `pro_kawaii_shoes_00`.
-- Imagens PNG RGBA de 1024 × 1536; as peças ocupam o mesmo sistema de coordenadas
-  do modelo. A composição usa um retângulo único de 300 × 520 na prancheta de 540 × 640.
-- Os outros quatro modelos e suas peças permanecem disponíveis no protótipo privado;
-  modelos antigos não podem selecionar peças desenhadas para Luna e vice-versa.
-- Todos os PNGs deste diretório foram gerados com ChatGPT Images para este jogo.
-  Não foram extraídos de recortar.com.br ou Pinterest. Não afirmamos que a geração
-  confere exclusividade registral ou ausência absoluta de semelhanças acidentais.
+- **10 bonecas kawaii originais**: Luna, Yumi, Maya, Clara, Jade, Sol, Amira, Sofia, Isis e Tainá. Os quatro modelos gratuitos legados continuam disponíveis (14 modelos no total).
+- **100 roupas e calçados**: 25 tops, 25 partes inferiores, 25 vestidos e 25 calçados.
+- **50 acessórios**: tiaras, chapéus, bolsas, óculos, colares, pulseiras e cachecóis.
+- **160 PNGs** com canvas 1024 × 1536 e canal alfa, preservados em `assets/kawaii/`.
+- O inventário de IDs e nomes está em `scripts/kawaii_collection.gd` (gerado a partir de `docs/KAWAII-PRO-ASSET-MANIFEST.json`).
+- `scripts/catalog.gd` expõe as peças como premium e compatíveis com qualquer uma das dez bonecas kawaii, **não** com os quatro modelos antigos.
+- `scripts/paper_sprites.gd` faz renderização pelo mesmo sistema de coordenadas; `scripts/studio.gd` disponibiliza quatro modelos por página e navegação entre as quatro páginas.
 
-## Limites explícitos antes de publicar
+## Compatibilidade e segurança
 
-1. É uma **primeira coleção de 1 modelo + 4 peças**, não a meta futura de
-   10 modelos, 100 peças de vestuário e 50 acessórios.
-2. Revisão visual humana no Android é obrigatória: encaixe fino, recorte das bordas,
-   escala, proporções e qualidade de exportação precisam de inspeção real.
-3. O pipeline CI confere carga, dimensões, transparência básica, catálogo, bloqueio
-   de direito, e exportação gráfica; não certifica qualidade estética.
-4. A cobrança PRO permanece desativada e só poderá ser ligada após inventário de
-   arte **realmente exclusiva**, qualidade aprovada e teste Play Billing num aparelho.
-5. Arquivos de `assets/paper/` são de procedência diferente e seguem bloqueados
-   para distribuição enquanto não houver licença comercial comprovada.
+- O jogo **mantém IDs antigos** (`pro_kawaii_*_00`) para preservar looks de versões anteriores.
+- Trocar entre bonecas kawaii mantém o look escolhido; trocar para boneca antiga remove itens incompatíveis.
+- O bloqueio Pro não pode ser burlado por edição do arquivo de looks: o jogo valida direito e categoria antes da restauração.
+- O modo Pro Test só libera conteúdo no preset debug dedicado; **PRO_SALES_ENABLED permanece false** na distribuição normal.
+- O cache das texturas kawaii tem limite de 12 elementos, para não reter todas as 160 imagens em memória durante a navegação.
 
-## Prompt-base do ImageGen
+## Testes automatizados
 
-> Original modern kawaii 2D storybook paper doll; centered perfectly frontal
-> neutral upright pose; warm pastel colors, dark plum outlines, subtle paper
-> texture; modest base clothing; 1024×1536 genuinely transparent PNG; no
-> franchise references, no logo, no watermark. Generate matching flat clothing
-> overlays in the **same full-size 1024×1536 coordinate system**, with no doll
-> in the garment PNG and transparent pixels outside the item.
+```bash
+godot --headless --path . --editor --import --quit
+godot --headless --path . --script res://tests/test_catalog_and_rules.gd
+godot --headless --path . --script res://tests/test_kawaii_assets.gd
+godot --headless --path . --script res://tests/test_kawaii_navigation.gd
+LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a godot --path . --script res://tests/test_graphical_export.gd
+```
 
-Os prompts de variação especificaram respectivamente vestido rosa com morangos,
-blusa marinheira azul, short lilás com margaridas e sapatilhas verde-menta.
+Os testes verificam os 160 PNGs, dimensões, transparência nos cantos, IDs únicos, disponibilidade premium, navegação, persistência dos looks e exportação gráfica de modelos selecionados. **Isso não equivale à aprovação manual de acabamento nem à verificação visual individual de todos os 150 acessórios e roupas em cada uma das dez bonecas.**
+
+## Aprovação necessária antes de comercializar
+
+1. Testar em aparelho Android as dez bonecas, todas as categorias, os encaixes das roupas e a exportação.
+2. Revisar a coerência estética dos 39 acessórios gerados por desenho vetorial programático (estilo mais plano que a aquarela das bonecas).
+3. Verificar os direitos de distribuição comercial dos demais recursos usados no aplicativo, especialmente `assets/paper/`, cuja licença ainda não foi comprovada.
+4. Testar o fluxo de compra/restauração na Play Store e manter vendas desligadas até a aprovação.
+
+O catálogo kawaii não foi extraído do site recortar.com.br. Parte foi gerada com ferramentas de imagem e parte como desenho vetorial original para este projeto. Não se presume exclusividade registral ou garantia absoluta de inexistência de semelhanças com trabalhos de terceiros.
