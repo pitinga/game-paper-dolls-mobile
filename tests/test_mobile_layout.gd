@@ -61,6 +61,14 @@ func _run() -> void:
 			var layout: Dictionary = game._label_layout(label, Vector2(viewport.x/2, 70), 14, viewport.x*.65)
 			_check(float(layout["text_width"]) <= viewport.x*.65,
 				"texto não ultrapassa largura Android")
+	# Nomes grandes cabem em cada cartão, sem invadir miniaturas vizinhas.
+	var font: Font = ThemeDB.fallback_font
+	for width in [360.0, 540.0, 720.0]:
+		var title_width: float = (width - 24.0) / 4.0 - 14.0
+		for full_name in ["Blusa floral de manga longa com brilho", "Vestido da boneca Céu", "ACESSÓRIO EXTRA"]:
+			var shortened: String = game._fit_card_name(full_name, title_width)
+			_check(font.get_string_size(shortened, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x <= title_width + 0.1,
+				"nome de roupa contido no cartão em %d px" % int(width))
 	game.size = Vector2(360,800)
 	_check(not ResourceLoader.exists("res://assets/paper/model_0.png"),
 		"nenhum recorte antigo de procedência incerta é incluído")
