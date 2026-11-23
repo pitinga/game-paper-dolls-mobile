@@ -3,6 +3,7 @@ extends RefCounted
 ## as mesmas coordenadas de montagem (540x640): não dependem da tela Android.
 
 const Catalog = preload("res://scripts/catalog.gd")
+const KawaiiCollection = preload("res://scripts/kawaii_collection.gd")
 const Art = preload("res://scripts/doll_art.gd")
 const FOLDER := "res://assets/paper/"
 const DOLL_RECT := Rect2(120, 64, 300, 520)
@@ -64,7 +65,7 @@ static func _fit_top(canvas: CanvasItem, name: String, rect: Rect2, color: Color
 
 
 static func draw_stage(canvas: CanvasItem, state: Object) -> void:
-	if int(state.model_index) == Catalog.KAWAII_MODEL_INDEX:
+	if int(state.model_index) >= Catalog.KAWAII_MODEL_INDEX:
 		_draw_kawaii_stage(canvas, state)
 		return
 	var name := "model_%d" % clampi(int(state.model_index), 0, 3)
@@ -97,7 +98,7 @@ static func draw_stage(canvas: CanvasItem, state: Object) -> void:
 static func _draw_kawaii_stage(canvas: CanvasItem, state: Object) -> void:
 	# Personagem e vestuário usam o MESMO canvas fonte de 1024x1536.
 	# Escalá-los pela mesma matriz mantém os pixels exatamente alinhados.
-	_fit_centered(canvas, "kawaii/model_4", DOLL_RECT)
+	_fit_centered(canvas, _kawaii_model_sprite(int(state.model_index)), DOLL_RECT)
 	var outfit: Dictionary = state.outfit
 	var dress := Catalog.by_id(str(outfit.get("dress", "")))
 	if not dress.is_empty():
@@ -217,8 +218,17 @@ static func draw_item_thumbnail(canvas: CanvasItem, item: Dictionary, center: Ve
 		Art.draw_item(canvas, item, center, 0.56)
 
 
+static func _kawaii_model_sprite(model_index: int) -> String:
+	var index := model_index - Catalog.KAWAII_MODEL_INDEX
+	if index < 0 or index >= KawaiiCollection.MODEL_SPRITES.size():
+		return ""
+	return "kawaii/" + str(KawaiiCollection.MODEL_SPRITES[index])
+
+
 static func draw_model_preview(canvas: CanvasItem, model_index: int, rect: Rect2) -> void:
-	_fit_centered(canvas, "kawaii/model_4" if model_index == Catalog.KAWAII_MODEL_INDEX else "model_%d" % model_index, rect)
+	var sprite := _kawaii_model_sprite(model_index) if model_index >= Catalog.KAWAII_MODEL_INDEX else "model_%d" % model_index
+	if not sprite.is_empty():
+		_fit_centered(canvas, sprite, rect)
 
 
 static func _draw_kawaii_thumbnail(canvas: CanvasItem, name: String, center: Vector2, size: Vector2) -> void:
