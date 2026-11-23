@@ -38,6 +38,8 @@ jobs:
         run: godot --headless --path . --script res://tests/test_catalog_and_rules.gd
       - name: Validar sprites autorais kawaii e compatibilidade de poses
         run: godot --headless --path . --script res://tests/test_kawaii_assets.gd
+      - name: Navegação e seleção da coleção Kawaii PRO
+        run: godot --headless --path . --script res://tests/test_kawaii_navigation.gd
       - name: Testes de toque e exportação
         run: godot --headless --path . --script res://tests/test_studio_integration.gd
       - name: Instalar display virtual para exportação real
