@@ -1,0 +1,121 @@
+name: Build Veste & Cria PRO APK
+on:
+  push:
+    branches: [build/pro-test-apk-20261124]
+    paths: ['.github/workflows/build-pro-test-apk.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Install verified Godot and Android export templates
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION=4.7.2-stable
+          BASE="https://github.com/godotengine/godot-builds/releases/download/${VERSION}"
+          FILE="Godot_v${VERSION}_linux.x86_64.zip"
+          TEMPLATES="Godot_v${VERSION}_export_templates.tpz"
+          cd /tmp
+          curl -fsSL "$BASE/SHA512-SUMS.txt" -o SHA512-SUMS.txt
+          curl -fsSL "$BASE/$FILE" -o "$FILE"
+          curl -fsSL "$BASE/$TEMPLATES" -o "$TEMPLATES"
+          grep -F " $FILE" SHA512-SUMS.txt | sha512sum -c -
+          grep -F " $TEMPLATES" SHA512-SUMS.txt | sha512sum -c -
+          unzip -q "$FILE"
+          sudo install "Godot_v${VERSION}_linux.x86_64" /usr/local/bin/godot
+          godot --version | grep -q '^4\.7\.2\.stable'
+          unzip -q "$TEMPLATES" -d /tmp/godot-templates
+          mkdir -p "$HOME/.local/share/godot/export_templates/4.7.2.stable"
+          cp -a /tmp/godot-templates/templates/. "$HOME/.local/share/godot/export_templates/4.7.2.stable/"
+      - name: Configure SDK and isolated debug signing key
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:?Android SDK not found}}"
+          JDK="${JAVA_HOME_17_X64:-${JAVA_HOME:?JDK not found}}"
+          export JAVA_HOME="$JDK"
+          export PATH="$JDK/bin:$PATH"
+          mkdir -p "$HOME/.android" "$HOME/.config/godot"
+          KEY="$HOME/.android/debug.keystore"
+          if [ ! -f "$KEY" ]; then
+            keytool -genkeypair -keystore "$KEY" -storepass android -keypass android -alias androiddebugkey -dname "CN=Android Debug,O=Android,C=US" -keyalg RSA -keysize 2048 -validity 10000
+          fi
+          cat > "$HOME/.config/godot/editor_settings-4.tres" <<EOF
+          [gd_resource type="EditorSettings" format=3]
+          [resource]
+          export/android/android_sdk_path = "$SDK"
+          export/android/java_sdk_path = "$JDK"
+          export/android/debug_keystore = "$KEY"
+          export/android/debug_keystore_user = "androiddebugkey"
+          export/android/debug_keystore_pass = "android"
+          EOF
+          echo "JAVA_HOME=$JDK" >> "$GITHUB_ENV"
+          echo "$JDK/bin" >> "$GITHUB_PATH"
+          echo "SDK=$SDK" >> "$GITHUB_ENV"
+          ls "$SDK/build-tools"
+      - name: Validate complete collections and isolated preset
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          assert len(list(Path("assets/free_kawaii").glob("*.png"))) == 78
+          assert len(list(Path("assets/kawaii").glob("*.png"))) == 160
+          assert not list(Path("assets/paper").rglob("*"))
+          print("78 Free + 160 PRO assets, no legacy images")
+          PY
+          godot --headless --path . --editor --import --quit
+          for t in test_pro_debug_preset test_catalog_and_rules test_free_kawaii_assets test_kawaii_assets test_kawaii_navigation; do
+            godot --headless --path . --script "res://tests/$t.gd"
+          done
+      - name: Export offline PRO debug APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          godot --headless --path . --export-debug "Android Pro Test" "$PWD/build/veste-e-cria-pro.apk"
+          test -s build/veste-e-cria-pro.apk
+      - name: Verify APK signature, identity, architecture and included assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          BT="$(find "$SDK/build-tools" -maxdepth 1 -mindepth 1 -type d | sort -V | tail -1)"
+          APK=build/veste-e-cria-pro.apk
+          "$BT/apksigner" verify --verbose --print-certs "$APK"
+          "$BT/aapt" dump badging "$APK" | tee build/badging.txt
+          grep -F "package: name='com.pitinga.paperdolls.protest'" build/badging.txt
+          grep -F "arm64-v8a" build/badging.txt
+          "$BT/aapt" dump permissions "$APK" | tee build/permissions.txt
+          if grep -q 'android.permission.INTERNET' build/permissions.txt; then
+            echo "Unexpected INTERNET permission"; exit 1
+          fi
+          python3 - <<'PY'
+          from zipfile import ZipFile
+          from pathlib import Path
+          with ZipFile("build/veste-e-cria-pro.apk") as z:
+              assert z.testzip() is None
+              names=z.namelist()
+              assert not any("assets/paper/" in n for n in names)
+              assert any(n.startswith("lib/arm64-v8a/") for n in names)
+              free=[n for n in names if "free_kawaii/" in n and (n.endswith(".png.import") or n.endswith(".png.remap"))]
+              pro=[n for n in names if "/kawaii/" in n and (n.endswith(".png.import") or n.endswith(".png.remap"))]
+              print("Free import/remap entries:",len(free),"PRO:",len(pro))
+              assert len(free)==78 and len(pro)==160, "APK asset manifest mismatch"
+          PY
+          sha256sum "$APK" | tee build/SHA256SUMS.txt
+      - name: Upload signed QA APK
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: veste-e-cria-pro-apk
+          path: |
+            build/veste-e-cria-pro.apk
+            build/SHA256SUMS.txt
+            build/badging.txt
+            build/permissions.txt
+          if-no-files-found: error
+          retention-days: 7
